@@ -12,7 +12,7 @@ definitions:
         docker_build: &docker_build
             - prefect_docker.projects.steps.build_docker_image: &docker_build_config
                 requires: prefect-docker>=0.2.0
-                image_name: zzstoatzz/prefect-monorepo
+                image_name: ghcr.io/zzstoatzz/prefect-monorepo
                 tag: dev
                 dockerfile: auto
                 push: true
