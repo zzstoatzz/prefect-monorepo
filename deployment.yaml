@@ -14,7 +14,7 @@ definitions:
                 requires: prefect-docker>=0.2.0
                 image_name: ghcr.io/zzstoatzz/prefect-monorepo
                 tag: dev
-                dockerfile: auto
+                dockerfile: Dockerfile.demo
                 push: true
 
 deployments:
