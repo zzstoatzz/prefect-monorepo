@@ -1,7 +1,7 @@
 definitions:
     work_pools:
         k8s_work_pool: &k8s_work_pool
-            name: kubernetes-prd-internal-tools
+            name: k8s
             work_queue_name: default
             job_variables:
                 image: prefecthq/prefect:2-latest
