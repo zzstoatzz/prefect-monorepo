@@ -1,6 +1,6 @@
-# Deploys the `increment-token-usage` flow to `marvin-bot` workspace
+# Deploys all flows in the src directory to Prefect Cloud
 
-name: Deploy token tracker flow
+name: Deploy flows
 
 env:
   PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy_token_tracker:
+  deploy_flows:
 
     runs-on: ubuntu-latest
 
@@ -33,6 +33,6 @@ jobs:
         run: |
           pip install .
 
-      - name: Update token tracker deployment
+      - name: Create or update deployments
         run: |
           prefect deploy --all --ci
