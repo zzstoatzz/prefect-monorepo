@@ -18,18 +18,10 @@ definitions:
                 push: true
 
 deployments:
-  - name: deployment-1
+  - name: healthcheck-demo
     entrypoint: src/demo_project/healthcheck.py:healthcheck
     schedule: *every_10_minutes
     parameters:
         message: Don't panic!
     work_pool: *k8s_work_pool
-    build: *docker_build # Uses the full docker_build action with no overrides
-
-  - name: deployment-2
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    work_pool: *k8s_work_pool
-    build:
-        - prefect_docker.projects.steps.build_docker_image:
-            <<: *docker_build_config # Uses the docker_build_config alias and overrides the dockerfile field
-            dockerfile: Dockerfile.custom
+    build: *docker_build
