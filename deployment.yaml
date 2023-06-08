@@ -1,0 +1,35 @@
+definitions:
+    work_pools:
+        k8s_work_pool: &k8s_work_pool
+            name: kubernetes-prd-internal-tools
+            work_queue_name: default
+            job_variables:
+                image: prefecthq/prefect:2-latest
+    schedules:
+        every_ten_minutes: &every_10_minutes
+            interval: 600
+    actions:
+        docker_build: &docker_build
+            - prefect_docker.projects.steps.build_docker_image: &docker_build_config
+                requires: prefect-docker>=0.2.0
+                image_name: zzstoatzz/prefect-monorepo
+                tag: dev
+                dockerfile: auto
+                push: true
+
+deployments:
+  - name: deployment-1
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    schedule: *every_10_minutes
+    parameters:
+        message: Don't panic!
+    work_pool: *k8s_work_pool
+    build: *docker_build # Uses the full docker_build action with no overrides
+
+  - name: deployment-2
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool: *k8s_work_pool
+    build:
+        - prefect_docker.projects.steps.build_docker_image:
+            <<: *docker_build_config # Uses the docker_build_config alias and overrides the dockerfile field
+            dockerfile: Dockerfile.custom

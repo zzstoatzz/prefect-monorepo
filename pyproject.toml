@@ -1,0 +1,79 @@
+# package metadata
+
+[project]
+name = "prefect-monorepo"
+dynamic = ["version"]
+description = "A demo monorepo for Prefect workflows."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "prefect~=2.10.0",
+]
+
+[project.optional-dependencies]
+
+
+dev = [
+    "black[jupyter]",
+    "ipython",
+    "mkdocs-autolinks-plugin~=0.7",
+    "mkdocs-awesome-pages-plugin~=2.8",
+    "mkdocs-material~=9.1",
+    "mkdocstrings[python]~=0.20",
+    "pandas>=2.0",
+    "pdbpp~=0.10",
+    "pre-commit>=2.21,<4.0",
+    "pytest-asyncio~=0.20",
+    "pytest-env~=0.8",
+    "pytest-sugar~=0.9",
+    "pytest~=7.2",
+    "ruff",
+]
+
+[project.urls]
+Code = "https://github.com/zzstoatzz/prefect-monorepo"
+Documentation = "https://github.com/zzstoatzz/prefect-monorepo/README.md"
+
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+# pytest configuration
+[tool.pytest.ini_options]
+markers = ["llm: indicates that a test calls an LLM (may be slow)."]
+
+testpaths = ["tests"]
+
+norecursedirs = [
+    "*.egg-info",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".vscode",
+    "node_modules",
+]
+
+asyncio_mode = 'auto'
+
+filterwarnings = [
+    "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
+]
+env = [
+    "FOO=BAR",
+]
+
+# black configuration
+[tool.black]
+preview = true
+
+# ruff configuration
+[tool.ruff]
+extend-select = ["I"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ['I', 'F401', 'E402']
+"conftest.py" = ["F401", "F403"]
+'tests/fixtures/*.py' = ['F403']

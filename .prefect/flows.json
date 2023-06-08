@@ -1,0 +1,3 @@
+{
+  "healthcheck": "src/demo_project/healthcheck.py:healthcheck"
+}
