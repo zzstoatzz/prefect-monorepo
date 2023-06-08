@@ -7,7 +7,7 @@ description = "A demo monorepo for Prefect workflows."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "prefect @ git+https://github.com/PrefectHQ/prefect.git@main",
+    "prefect~=2.10.13",
 ]
 
 [project.optional-dependencies]
