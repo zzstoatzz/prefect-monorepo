@@ -4,7 +4,7 @@ definitions:
             name: k8s
             work_queue_name: default
             job_variables:
-                image: prefecthq/prefect:2-latest
+                image: "{{ prefect.blocks.string.prod_image}}"
     schedules:
         every_ten_minutes: &every_10_minutes
             interval: 600
