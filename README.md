@@ -1,7 +1,7 @@
 # sample `prefect-monorepo`
 
+this repo leverages Prefect's declarative yaml deployment UX
 
-leverages Prefect's delcarative yaml deployment UX
 
 needs a couple github secrets:
 - `PAT` - github personal access token with `write:packages` scope for pushing images to github packages
