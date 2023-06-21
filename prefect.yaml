@@ -1,5 +1,3 @@
-# File for configuring project / deployment build, push and pull steps
-
 # Generic metadata about this project
 name: prefect-monorepo
 prefect-version: 2.10.12
@@ -16,3 +14,32 @@ pull:
     repository: https://github.com/zzstoatzz/prefect-monorepo
     branch: main
     access_token: null
+
+# File for configuring project / deployment build, push and pull steps
+definitions:
+    work_pools:
+        k8s_work_pool: &k8s_work_pool
+            name: k8s
+            work_queue_name: default
+            job_variables:
+                image: "{{ prefect.blocks.string.prod_image }}"
+    schedules:
+        every_ten_minutes: &every_10_minutes
+            interval: 600
+    actions:
+        docker_build: &docker_build
+            - prefect_docker.projects.steps.build_docker_image: &docker_build_config
+                requires: prefect-docker>=0.2.0
+                image_name: ghcr.io/zzstoatzz/prefect-monorepo
+                tag: dev
+                dockerfile: Dockerfile.demo
+                push: true
+
+deployments:
+  - name: healthcheck-demo
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    schedule: *every_10_minutes
+    parameters:
+        message: Don't panic!
+    work_pool: *k8s_work_pool
+    build: *docker_build
