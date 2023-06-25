@@ -22,11 +22,7 @@ definitions:
             name: k8s
             work_queue_name: default
             job_variables:
-                image: "{{ prefect.blocks.string.prod_image }}"
-        docker_pool: &docker_pool
-            name: docker-work
-            job_variables:
-                image: prefecthq/prefect:2-latest
+                image: "{{ build_image.image }}"
 
     schedules:
         every_ten_minutes: &every_10_minutes
@@ -34,6 +30,7 @@ definitions:
     actions:
         docker_build: &docker_build
             - prefect_docker.projects.steps.build_docker_image: &docker_build_config
+                id: build-image
                 requires: prefect-docker>=0.2.0
                 image_name: zzstoatzz/prefect-monorepo
                 dockerfile: Dockerfile.demo
