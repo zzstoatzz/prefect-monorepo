@@ -10,7 +10,7 @@ push: null
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
-- prefect.projects.steps.git_clone_project:
+- prefect.deployments.steps.git_clone:
     repository: https://github.com/zzstoatzz/prefect-monorepo
     branch: main
     access_token: null
@@ -23,18 +23,28 @@ definitions:
             work_queue_name: default
             job_variables:
                 image: "{{ build_image.image }}"
+        local_work_pool: &local_work_pool
+            name: local
 
     schedules:
         every_ten_minutes: &every_10_minutes
             interval: 600
     actions:
         docker_build: &docker_build
-            - prefect_docker.projects.steps.build_docker_image: &docker_build_config
+            - prefect_docker.deployments.steps.build_docker_image: &docker_build_config
                 id: build-image
                 requires: prefect-docker>=0.2.0
                 image_name: zzstoatzz/prefect-monorepo
                 dockerfile: Dockerfile.demo
                 push: true
+        test: &test
+            - prefect.deployments.steps.run_shell_script:
+                id: get-env-name
+                script: |
+                    echo "User: $USER"
+                stream_output: true
+            
+
 
 deployments:
   - name: healthcheck-demo
