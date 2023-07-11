@@ -42,4 +42,4 @@ jobs:
 
       - name: Create or update deployments
         run: |
-          prefect deploy --all --ci
+          prefect --no-prompt deploy --all
