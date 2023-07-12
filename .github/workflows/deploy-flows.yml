@@ -42,17 +42,22 @@ jobs:
       - name: Get list of modified python files
         id: getfile
         run: |
-          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' | tr '\n' ',')"
+          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' | tr '\n' ',')
+          echo "Modified Python files: $files"
+          echo "files=$files" >> $GITHUB_ENV
         
       - name: Deploy changed flows
         run: |
-          IFS="," read -ra FILES <<< "${{ steps.getfile.outputs.files }}"
+          IFS="," read -ra FILES <<< "${{ env.files }}"
           for file in "${FILES[@]}"; do
+            echo "Processing file: $file"
             entrypoints=$(python ../scripts/get_flow_entrypoints.py $file)
+            echo "Found entrypoints: $entrypoints"
             IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
             for entrypoint in "${ENTRYPOINTS[@]}"; do
+              echo "Deploying flow: $entrypoint"
               prefect --no-prompt deploy $entrypoint
             done
           done
-        
+      
         
