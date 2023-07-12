@@ -43,7 +43,7 @@ jobs:
       - name: Get list of modified python files
         id: getfile
         run: |
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' | tr '\n' ',')
+          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$' | tr '\n' ',')
           echo "Modified Python files: $files"
           echo "files=$files" >> $GITHUB_ENV
 
@@ -52,9 +52,16 @@ jobs:
           entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
           IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
+          IFS="," read -ra FILES <<< $files
           for entrypoint in "${ENTRYPOINTS[@]}"; do
-              echo "Deploying flow: $entrypoint"
-              prefect --no-prompt deploy $entrypoint
+              file=$(echo $entrypoint | cut -d ":" -f 1)
+              if [[ " ${FILES[@]} " =~ " ${file} " ]]; then
+                  echo "Deploying flow: $entrypoint"
+                  prefect --no-prompt deploy $entrypoint
+              else
+                  echo "Skipping flow: $entrypoint"
+              fi
           done
-  
         
+        env:
+          files: ${{ env.files }}
