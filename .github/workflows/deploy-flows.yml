@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
+  
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
@@ -43,18 +43,19 @@ jobs:
         run: |
           pip install .
 
-      - name: Get modified python files and deploy changed flows
+      - name: Get list of modified python files
+        id: getfile
         run: |
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$')
-          if [[ -z "$files" ]]; then
-            echo "No modified Python files. Skipping flow deployment."
-            exit 0
-          fi
+          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$' | tr '\n' ',')
           echo "Modified Python files: $files"
+          echo "files=$files" >> $GITHUB_ENV
+
+      - name: Deploy changed flows
+        run: |
           entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
           IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
-          IFS=$'\n' read -ra FILES <<< "$files"
+          IFS="," read -ra FILES <<< $files
           for entrypoint in "${ENTRYPOINTS[@]}"; do
               file=$(echo $entrypoint | cut -d ":" -f 1)
               if [[ " ${FILES[@]} " =~ " ${file} " ]]; then
@@ -64,4 +65,6 @@ jobs:
                   echo "Skipping flow: $entrypoint"
               fi
           done
-    
+        
+        env:
+          files: ${{ env.files }}
