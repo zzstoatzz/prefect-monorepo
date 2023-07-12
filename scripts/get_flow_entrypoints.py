@@ -1,3 +1,9 @@
+# Script to get the entrypoints of all flows in the src directory
+# for use in the .github/workflows/deploy-flows.yml file.
+
+# Usage: python scripts/get_flow_entrypoints.py
+# prints comma-separated entrypoints to stdout
+
 import pathlib
 from prefect.deployments.base import _search_for_flow_functions
 
