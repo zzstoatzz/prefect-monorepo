@@ -37,6 +37,10 @@ definitions:
                 image_name: zzstoatzz/prefect-monorepo
                 dockerfile: Dockerfile.demo
                 push: true
+                credentials: 
+                    - username: zzstoatzz
+                      password: "{{ $DOCKERHUB_PASSWORD }}"
+                      registry_url: https://ghcr.io
         test: &test
             - prefect.deployments.steps.run_shell_script:
                 id: get-env-name
