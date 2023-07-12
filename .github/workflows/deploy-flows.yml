@@ -43,19 +43,18 @@ jobs:
         run: |
           pip install .
 
-      - name: Get list of modified python files
-        id: getfile
+      - name: Get modified python files and deploy changed flows
         run: |
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$' | tr '\n' ',')
+          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$')
+          if [[ -z "$files" ]]; then
+            echo "No modified Python files. Skipping flow deployment."
+            exit 0
+          fi
           echo "Modified Python files: $files"
-          echo "files=$files" >> $GITHUB_ENV
-
-      - name: Deploy changed flows
-        run: |
           entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
           IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
-          IFS="," read -ra FILES <<< $files
+          IFS=$'\n' read -ra FILES <<< "$files"
           for entrypoint in "${ENTRYPOINTS[@]}"; do
               file=$(echo $entrypoint | cut -d ":" -f 1)
               if [[ " ${FILES[@]} " =~ " ${file} " ]]; then
@@ -65,6 +64,4 @@ jobs:
                   echo "Skipping flow: $entrypoint"
               fi
           done
-        
-        env:
-          files: ${{ env.files }}
+    
