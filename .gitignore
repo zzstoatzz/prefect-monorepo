@@ -62,3 +62,6 @@ dask-worker-space/
 .idea/
 .vscode/
 !ui/.vscode/
+
+.prefect
+.prefect/*
