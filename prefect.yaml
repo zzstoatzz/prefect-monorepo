@@ -1,6 +1,6 @@
 # Generic metadata about this project
 name: prefect-monorepo
-prefect-version: 2.10.12
+prefect-version: 2.10.20
 
 # build section allows you to manage and build docker images
 build: null
@@ -31,7 +31,7 @@ definitions:
             interval: 600
     actions:
         docker_build: &docker_build
-            - prefect_docker.deployments.steps.build_docker_image: &docker_build_config
+            - prefect_docker.deployments.steps.build_docker_image:
                 id: build-image
                 requires: prefect-docker>=0.2.0
                 image_name: zzstoatzz/prefect-monorepo
