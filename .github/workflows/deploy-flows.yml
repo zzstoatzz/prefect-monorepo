@@ -49,12 +49,12 @@ jobs:
 
       - name: Deploy changed flows
         run: |
-          entrypoints=$(python ../scripts/get_flow_entrypoints.py)
+          entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
           IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
           for entrypoint in "${ENTRYPOINTS[@]}"; do
               echo "Deploying flow: $entrypoint"
               prefect --no-prompt deploy $entrypoint
           done
-
+  
         
