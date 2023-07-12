@@ -1,13 +1,14 @@
-import sys
+import pathlib
 from prefect.deployments.base import _search_for_flow_functions
 
-def main(filepath):
+async def main():
+    base_dir = pathlib.Path(__file__).parent.parent / "src"
     entrypoints = [
-        f"{flow['filepath']}:{flow['function_name']}"
-        for flow in _search_for_flow_functions()
-        if flow['filepath'] == filepath
+        f"{pathlib.Path(flow['filepath']).relative_to(base_dir)}:{flow['function_name']}"
+        for flow in await _search_for_flow_functions(directory=str(base_dir))
     ]
     print(','.join(entrypoints))
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    import asyncio
+    asyncio.run(main())
