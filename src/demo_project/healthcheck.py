@@ -19,7 +19,6 @@ def log_platform_info():
     )
 
 
-
 @flow(log_prints=True)
 def healthcheck(message: str = "Hello Marvin!"):
     
