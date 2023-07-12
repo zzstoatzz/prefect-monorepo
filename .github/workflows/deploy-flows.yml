@@ -33,6 +33,10 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install .
+      
+      - name: Login to DockerHub
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u zzstoatzz --password-stdin
 
       - name: Create or update deployments
         run: |

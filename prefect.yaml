@@ -37,10 +37,6 @@ definitions:
                 image_name: zzstoatzz/prefect-monorepo
                 dockerfile: Dockerfile.demo
                 push: true
-                credentials: 
-                    username: zzstoatzz
-                    password: "{{ $DOCKERHUB_PASSWORD }}"
-                    registry_url: https://index.docker.io/v1/
 
 deployments:
   - name: healthcheck-demo
