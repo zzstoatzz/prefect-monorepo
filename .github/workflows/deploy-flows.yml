@@ -39,6 +39,20 @@ jobs:
         run: |
           pip install .
 
-      - name: Create or update deployments
+      - name: Get list of modified python files
+        id: getfile
         run: |
-          prefect --no-prompt deploy --all
+          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' | tr '\n' ',')"
+        
+      - name: Deploy changed flows
+        run: |
+          IFS="," read -ra FILES <<< "${{ steps.getfile.outputs.files }}"
+          for file in "${FILES[@]}"; do
+            entrypoints=$(python ../scripts/get_flow_entrypoints.py $file)
+            IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
+            for entrypoint in "${ENTRYPOINTS[@]}"; do
+              prefect --no-prompt deploy $entrypoint
+            done
+          done
+        
+        
