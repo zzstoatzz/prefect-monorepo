@@ -34,7 +34,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: zzstoatzz
-          password: ${{ env.DOCKERHUB_PASSWORD }}
+          password: $DOCKERHUB_PASSWORD
 
       - name: Install Dependencies
         run: |
