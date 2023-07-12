@@ -3,6 +3,7 @@ import sys
 
 import prefect
 from prefect import task, flow
+from prefect.states import Completed
 from prefect.server.api.server import SERVER_API_VERSION
 
 
@@ -26,6 +27,7 @@ def healthcheck(message: str = "Hello Marvin!"):
     
     log_platform_info()
 
+    return Completed(message="Healthcheck completed.")
 
 if __name__ == "__main__":
     healthcheck()
