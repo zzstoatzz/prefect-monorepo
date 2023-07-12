@@ -10,7 +10,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - src
+      - src/**.py
 
   workflow_dispatch:
 
