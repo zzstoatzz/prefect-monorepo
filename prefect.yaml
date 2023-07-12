@@ -40,15 +40,7 @@ definitions:
                 credentials: 
                     - username: zzstoatzz
                       password: "{{ $DOCKERHUB_PASSWORD }}"
-                      registry_url: https://ghcr.io
-        test: &test
-            - prefect.deployments.steps.run_shell_script:
-                id: get-env-name
-                script: |
-                    echo "User: $USER"
-                stream_output: true
-            
-
+                      registry_url: https://index.docker.io/v1/
 
 deployments:
   - name: healthcheck-demo
