@@ -29,6 +29,9 @@ definitions:
     schedules:
         every_ten_minutes: &every_10_minutes
             interval: 600
+        minutely: &minutely
+            rrule: "FREQ=MINUTELY"
+        
     actions:
         docker_build: &docker_build
             - prefect_docker.deployments.steps.build_docker_image:
@@ -41,7 +44,7 @@ definitions:
 deployments:
   - name: healthcheck-demo
     entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *every_10_minutes
+    schedule: *minutely
     parameters:
         message: Don't panic!
     work_pool: *k8s_work_pool
