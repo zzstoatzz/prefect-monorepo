@@ -23,6 +23,8 @@ def healthcheck(message: str = "Hello Marvin!"):
     
     print(message)
     
+    # do not skip me
+    
     log_platform_info()
 
     return Completed(message="Healthcheck completed.")
