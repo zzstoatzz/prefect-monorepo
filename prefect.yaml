@@ -10,7 +10,7 @@ push: null
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
-- prefect.deployments.steps.git_clone:
+- prefect.deployments.steps.git_clone: &clone_repo
     repository: https://github.com/zzstoatzz/prefect-monorepo
     branch: main
     access_token: null
@@ -47,5 +47,11 @@ deployments:
     schedule: *minutely
     parameters:
         message: Don't panic!
-    work_pool: *k8s_work_pool
-    build: *docker_build
+    work_pool: *local_work_pool
+    # build: *docker_build
+    pull:
+        - prefect.deployments.steps.git_clone:
+            <<: *clone_repo
+        - prefect.deployments.steps.run_shell_script:
+            script: echo "Hello from the healthcheck-demo project!"
+
