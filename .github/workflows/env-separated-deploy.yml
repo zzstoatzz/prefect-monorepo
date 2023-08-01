@@ -52,7 +52,7 @@ jobs:
         run: prefect cloud workspace set -w ${{ env.DEV_WORKSPACE }}
         if: startsWith(github.ref, 'refs/heads/feature-')
 
-      - name: Deploy flows found in branch, only if they have been modified
+      - name: Deploy flows in branch defined in modified files
         run: |
           entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
