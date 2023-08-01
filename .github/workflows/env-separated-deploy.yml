@@ -5,9 +5,14 @@ name: Deploy flows to env
 env:
   PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
   PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+  PROD_WORKSPACE: 'prefect-technologies/marvin-bot'
+  DEV_WORKSPACE: 'prefect-technologies/inconspicuous-pond'
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main, feature-* ]
+    paths: 
+      - 'src/**.py'
 
 permissions:
   contents: read
@@ -16,12 +21,6 @@ jobs:
   deploy_flows:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [
-            'prefect-technologies/inconspicuous-pond',
-            'prefect-technologies/marvin-bot'
-        ]
 
     steps:
       - uses: actions/checkout@v3
@@ -45,10 +44,15 @@ jobs:
           echo "Modified Python files: $files"
           echo "files=$files" >> $GITHUB_ENV
 
-      - name: switch to appropriate env
-        run: prefect cloud workspace set -w ${{ matrix.environment }}
+      - name: switch to prod
+        run: prefect cloud workspace set -w ${{ env.PROD_WORKSPACE }}
+        if: github.ref == 'refs/heads/main'
 
-      - name: Deploy changed flows
+      - name: switch to dev
+        run: prefect cloud workspace set -w ${{ env.DEV_WORKSPACE }}
+        if: startsWith(github.ref, 'refs/heads/feature-')
+
+      - name: Deploy flows found in branch, only if they have been modified
         run: |
           entrypoints=$(python scripts/get_flow_entrypoints.py)
           echo "Found entrypoints: $entrypoints"
