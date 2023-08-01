@@ -1,6 +1,6 @@
 # Deploys changed flows to the appropriate Prefect Cloud workspace
 
-name: Deploy flows
+name: Deploy flows to env
 
 env:
   PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
