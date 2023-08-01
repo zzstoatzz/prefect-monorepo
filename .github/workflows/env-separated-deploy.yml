@@ -18,7 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: ['inconspicuous-pond', 'marvin-bot']
+        environment: [
+            'prefect-technologies/inconspicuous-pond',
+            'prefect-technologies/marvin-bot'
+        ]
 
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +46,7 @@ jobs:
           echo "files=$files" >> $GITHUB_ENV
 
       - name: switch to appropriate env
-        run: prefect cloud workspace set ${{ matrix.environment }}
+        run: prefect cloud workspace set -w ${{ matrix.environment }}
 
       - name: Deploy changed flows
         run: |
