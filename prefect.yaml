@@ -53,4 +53,3 @@ deployments:
             <<: *clone_repo
         - prefect.deployments.steps.run_shell_script:
             script: echo "Hello from the healthcheck-demo project!"
-

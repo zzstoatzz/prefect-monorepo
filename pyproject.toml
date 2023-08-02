@@ -7,7 +7,8 @@ description = "A demo monorepo for Prefect workflows."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "prefect~=2.10.13",
+    "prefect~=2.11.2",
+    "marvin~=1.2.1",
 ]
 
 [project.optional-dependencies]
@@ -62,7 +63,8 @@ filterwarnings = [
     "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
 ]
 env = [
-    "FOO=BAR",
+    "MARVIN_LLM_TEMPERATURE=0",
+    "MARVIN_LLM_MODEL=openai/gpt-3.5-turbo",
 ]
 
 # black configuration

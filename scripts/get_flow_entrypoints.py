@@ -5,14 +5,16 @@
 # prints comma-separated entrypoints to stdout
 
 import pathlib
+
 from prefect.deployments.base import _search_for_flow_functions
+
 
 async def main():
     src_dir = pathlib.Path('src')
     base_dir = pathlib.Path(__file__).resolve().parent.parent / src_dir
     
     entrypoints = [
-        f"src/{flow['filepath'].replace(str(base_dir) + '/', '')}:{flow['function_name']}"
+        f"src/{flow['filepath'].replace(str(base_dir) + '/', '')}:{flow['function_name']}" # noqa: E501
         for flow in await _search_for_flow_functions(directory=str(base_dir))
         if str(base_dir) in flow['filepath']
     ]

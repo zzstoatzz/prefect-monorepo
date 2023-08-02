@@ -2,9 +2,9 @@ import platform
 import sys
 
 import prefect
-from prefect import task, flow
-from prefect.states import Completed
+from prefect import flow, task
 from prefect.server.api.server import SERVER_API_VERSION
+from prefect.states import Completed
 
 
 @task
@@ -19,11 +19,9 @@ def log_platform_info():
     )
 
 @flow(log_prints=True)
-def healthcheck(message: str = "Hello Marvin!"):
+def healthcheck(message: str = "hello, world!"):
     
     print(message)
-    
-    # do not skip me
     
     log_platform_info()
 
