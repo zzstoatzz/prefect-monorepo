@@ -7,7 +7,7 @@ this repo leverages [Prefect's declarative yaml deployment UX `prefect.yaml`](ht
 
 ### which are defined like
 this, using the [`prefect.yaml`](prefect.yaml) file to define the deployment and its reusuable components (e.g. a work pool like `local_work_pool` and a `pull` step like `clone_repo`):
-```
+```yaml
 deployments:
   - name: healthcheck-demo
     entrypoint: src/demo_project/healthcheck.py:healthcheck
@@ -15,7 +15,6 @@ deployments:
     parameters:
         message: Don't panic!
     work_pool: *local_work_pool
-    # build: *docker_build
     pull:
         - prefect.deployments.steps.git_clone:
             <<: *clone_repo
@@ -26,7 +25,7 @@ deployments:
 ## pre-reqs for doing this yourself
 - set `env` values in your GitHub Action:
     - your `PREFECT_API_KEY`, `PREFECT_API_KEY` as [GitHub Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
-    - your `PROD_WORKSPACE` and `DEV_WORKSPACE`.
+    - your `PROD_WORKSPACE` and `DEV_WORKSPACE`
 
 ```yaml
 env:
