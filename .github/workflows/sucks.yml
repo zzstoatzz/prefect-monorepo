@@ -1,0 +1,14 @@
+name: Fail on Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fail the Build
+        run: exit 1

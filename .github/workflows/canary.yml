@@ -1,0 +1,30 @@
+name: Notify Slack
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check status of main branch
+        id: check_status
+        run: |
+          status=$(curl -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/commits/main/status" | jq '.state')
+          echo "MAIN_BRANCH_STATUS=$status" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+
+      - name: Send notification to Slack
+        if: env.MAIN_BRANCH_STATUS == '"failure"'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          text: "PR was merged into main with failing checks!"
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
