@@ -1,4 +1,4 @@
-name: Notify Slack
+name: Notify Slack when main unhealthy
 on:
   pull_request_target:
     types:
