@@ -32,22 +32,26 @@ jobs:
     if: github.ref == 'refs/heads/main' && failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Download failure flags
+      - name: Download all failure flags
         uses: actions/download-artifact@v2
         with:
-          name: test1-failure-flag
-          path: failure-flags/test1
+          path: failure-flags/
 
-      - name: Check for failure flags and print its content
+      - name: Check for failure flags and print their content
         id: check_failure
         run: |
-          if [ -f "failure-flags/test1/test1-failure.txt" ]; then
-            echo "TESTS_FAILED=true" >> $GITHUB_ENV
-            cat "failure-flags/test1/test1-failure.txt"
-          else
+          for flag in failure-flags/*/*.txt; do
+            if [ -f "$flag" ]; then
+              echo "TESTS_FAILED=true" >> $GITHUB_ENV
+              echo "Contents of $flag:"
+              cat "$flag"
+            fi
+          done
+          if [ -z "$TESTS_FAILED" ]; then
             echo "TESTS_FAILED=false" >> $GITHUB_ENV
           fi
 
       - name: Failure Notification
         if: env.TESTS_FAILED == 'true'
         run: echo "Tests have failed."
+        
