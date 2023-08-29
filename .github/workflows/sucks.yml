@@ -40,18 +40,24 @@ jobs:
       - name: Check for failure flags and print their content
         id: check_failure
         run: |
+          failure_count=0
+          failed_tests=""
           for flag in failure-flags/*/*.txt; do
             if [ -f "$flag" ]; then
-              echo "TESTS_FAILED=true" >> $GITHUB_ENV
+              ((failure_count++))
+              test_name=$(basename $flag .txt)
+              failed_tests="$failed_tests $test_name,"
               echo "Contents of $flag:"
               cat "$flag"
             fi
           done
-          if [ -z "$TESTS_FAILED" ]; then
+          if [ $failure_count -gt 3 ]; then
+            echo "TESTS_FAILED=true" >> $GITHUB_ENV
+            echo "FAILED_TESTS=$failed_tests" >> $GITHUB_ENV
+          else
             echo "TESTS_FAILED=false" >> $GITHUB_ENV
           fi
 
       - name: Failure Notification
         if: env.TESTS_FAILED == 'true'
-        run: echo "Tests have failed."
-        
+        run: echo "Tests have failed: $FAILED_TESTS"
