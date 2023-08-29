@@ -13,12 +13,9 @@ jobs:
         run: mkdir -p temp
 
       - name: Simulate a test
-        run: exit 1
+        id: maybe_fail
+        run: exit 1 || echo "step failed" > temp/failure.txt
         continue-on-error: true
-
-      - name: Create failure flag
-        if: ${{ failure() }}
-        run: echo "failed" > temp/failure.txt
 
       - name: Upload failure flag
         if: always()
