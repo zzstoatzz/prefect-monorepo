@@ -9,9 +9,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create temp directory for failure flag
-        run: mkdir -p temp
-
       - name: Simulate a test
         id: maybe_fail
         run: exit 1
@@ -29,6 +26,7 @@ jobs:
 
   notify-tests-failing-on-main:
     needs: run-tests
+    if: github.ref == 'refs/heads/main' && failure()
     runs-on: ubuntu-latest
     steps:
       - name: Download failure flag
@@ -49,10 +47,3 @@ jobs:
       - name: Failure Notification
         if: env.TESTS_FAILED == 'true'
         run: echo "Tests have failed."
-
-        
-
-
-
-
-
