@@ -40,8 +40,12 @@ jobs:
       - name: Check for failure flags and print their content
         id: check_failure
         run: |
+          ls -al failure-flags/*  # List directory to debug
           failure_count=$(ls -1q failure-flags/*/*.txt | wc -l)
           failed_tests=$(basename -a failure-flags/*/*.txt | tr '\n' ', ')
+          
+          echo "Failure Count: $failure_count"  # Debug print
+          echo "Failed Tests: $failed_tests"  # Debug print
           
           if [ $failure_count -gt 3 ]; then
             echo "TESTS_FAILED=true" >> $GITHUB_ENV
