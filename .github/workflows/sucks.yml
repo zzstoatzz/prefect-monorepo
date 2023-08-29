@@ -14,7 +14,7 @@ jobs:
 
       - name: Simulate a test
         id: maybe_fail
-        run: exit 1 || echo "step failed" > temp/failure.txt
+        run: exit 1 || echo "step failed" > temp/failure.txt && ls -l temp
         continue-on-error: true
 
       - name: Upload failure flag
