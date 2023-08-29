@@ -5,6 +5,9 @@ on: [push]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test: [test1, test2]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -15,31 +18,32 @@ jobs:
 
       - name: Create failure flag
         if: ${{ failure() }}
-        run: echo "Failure" > failure.txt
+        run: echo "Failure in ${{ matrix.test }}" > "${{ matrix.test }}-failure.txt"
 
       - name: Upload failure flag
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: failure-flag
-          path: failure.txt
+          name: "${{ matrix.test }}-failure-flag"
+          path: "${{ matrix.test }}-failure.txt"
 
   notify-tests-failing-on-main:
     needs: run-tests
     if: github.ref == 'refs/heads/main' && failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Download failure flag
+      - name: Download failure flags
         uses: actions/download-artifact@v2
         with:
-          name: failure-flag
-          path: failure-flag
+          name: test1-failure-flag
+          path: failure-flags/test1
 
-      - name: Check for failure flag
+      - name: Check for failure flags and print its content
         id: check_failure
         run: |
-          if [ -f "failure-flag/failure.txt" ]; then
+          if [ -f "failure-flags/test1/test1-failure.txt" ]; then
             echo "TESTS_FAILED=true" >> $GITHUB_ENV
+            cat "failure-flags/test1/test1-failure.txt"
           else
             echo "TESTS_FAILED=false" >> $GITHUB_ENV
           fi
