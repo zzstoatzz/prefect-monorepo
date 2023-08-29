@@ -60,4 +60,6 @@ jobs:
 
       - name: Failure Notification
         if: env.TESTS_FAILED == 'true'
-        run: echo "Tests have failed: $FAILED_TESTS"
+        run: |
+          FAILED_TESTS_ENV=${{ env.FAILED_TESTS }}
+          echo "Tests have failed: $FAILED_TESTS_ENV"
