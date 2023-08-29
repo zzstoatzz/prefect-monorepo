@@ -58,4 +58,4 @@ jobs:
       - name: Failure Notification
         if: steps.check_failure.outputs.tests_failed == 'true'
         run: |
-          echo "Tests have failed: ${{ env.FAILED_TESTS }}"
+          echo "Tests have failed: ${{ steps.check_failure.outputs.failed_tests }}"
