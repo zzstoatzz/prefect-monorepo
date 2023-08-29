@@ -42,15 +42,20 @@ jobs:
         run: |
           failure_count=0
           failed_tests=""
-          for flag in failure-flags/*/*.txt; do
-            if [ -f "$flag" ]; then
-              ((failure_count++))
-              test_name=$(basename $flag .txt)
-              failed_tests="$failed_tests $test_name,"
-              echo "Contents of $flag:"
-              cat "$flag"
-            fi
-          done
+          shopt -s nullglob
+          txt_files=(failure-flags/*/*.txt)
+          if [[ ${#txt_files[@]} -gt 0 ]]; then
+            for flag in "${txt_files[@]}"; do
+              if [ -f "$flag" ]; then
+                ((failure_count++))
+                test_name=$(basename $flag .txt)
+                failed_tests="$failed_tests $test_name,"
+                echo "Contents of $flag:"
+                cat "$flag"
+              fi
+            done
+          fi
+          shopt -u nullglob
           if [ $failure_count -gt 3 ]; then
             echo "TESTS_FAILED=true" >> $GITHUB_ENV
             echo "FAILED_TESTS=$failed_tests" >> $GITHUB_ENV
