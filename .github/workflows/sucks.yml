@@ -9,20 +9,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create temp directory for failure flag
+        run: mkdir -p temp
+
       - name: Simulate a test
         run: exit 1
         continue-on-error: true
 
       - name: Create failure flag
         if: ${{ failure() }}
-        run: echo "failed" > failure.txt
+        run: echo "failed" > temp/failure.txt
 
       - name: Upload failure flag
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: failure-flag
-          path: ./failure.txt
+          path: temp/
 
   notify-tests-failing-on-main:
     needs: run-tests
