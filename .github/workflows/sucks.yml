@@ -10,15 +10,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Simulate a test
-        run: exit 1 || echo "failed" > failure.txt
+        run: exit 1
         continue-on-error: true
 
+      - name: Create failure flag
+        if: ${{ failure() }}
+        run: echo "failed" > failure.txt
+
       - name: Upload failure flag
-        if: ${{ always() }}
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: failure-flag
-          path: failure.txt
+          path: ./failure.txt
 
   notify-tests-failing-on-main:
     needs: run-tests
