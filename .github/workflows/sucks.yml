@@ -58,4 +58,4 @@ jobs:
       - name: Failure Notification
         if: steps.check_failure.outputs.tests_failed == 'true'
         run: |
-          echo "More than one test failed. Sending notification."
+          echo "More than three unit tests failed on main."
