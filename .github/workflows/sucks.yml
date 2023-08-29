@@ -14,15 +14,18 @@ jobs:
 
       - name: Simulate a test
         id: maybe_fail
-        run: exit 1 || echo "step failed" > temp/failure.txt && ls -l temp
-        continue-on-error: true
+        run: exit 1
+
+      - name: Create failure flag
+        if: ${{ failure() }}
+        run: echo "Failure" > failure.txt
 
       - name: Upload failure flag
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: failure-flag
-          path: temp/
+          path: failure.txt
 
   notify-tests-failing-on-main:
     needs: run-tests
