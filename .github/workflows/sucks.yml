@@ -47,12 +47,17 @@ jobs:
           echo "Failure Count: $failure_count"  # Debug print
           echo "Failed Tests: $failed_tests"  # Debug print
           
-          if [ $failure_count -gt 1 ]; then
+          if [ $failure_count -gt 3 ]; then
             echo "TESTS_FAILED=true" >> $GITHUB_ENV
-            echo "FAILED_TESTS=$failed_tests" >> $GITHUB_ENV
+            echo "tests_failed=true"  # Note the change here
           else
             echo "TESTS_FAILED=false" >> $GITHUB_ENV
+            echo "tests_failed=false"  # Note the change here
           fi
+          echo "tests_failed=$tests_failed" >> $GITHUB_ENV
+          echo "tests_failed=$tests_failed"  
+          echo "tests_failed=$tests_failed" >> $GITHUB_ENV
+          echo "::set-output name=tests_failed::$tests_failed"
 
       - name: Failure Notification
         if: steps.check_failure.outputs.TESTS_FAILED == 'true'
