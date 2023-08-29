@@ -47,7 +47,7 @@ jobs:
           echo "Failure Count: $failure_count"  # Debug print
           echo "Failed Tests: $failed_tests"  # Debug print
           
-          if [ $failure_count -gt 3 ]; then
+          if [ $failure_count -gt 1 ]; then
             tests_failed="true"
           else
             tests_failed="false"
@@ -58,4 +58,4 @@ jobs:
       - name: Failure Notification
         if: steps.check_failure.outputs.tests_failed == 'true'
         run: |
-          echo "More than three tests failed. Sending notification."
+          echo "More than one test failed. Sending notification."
