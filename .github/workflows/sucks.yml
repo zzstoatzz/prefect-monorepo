@@ -21,7 +21,7 @@ jobs:
         run: echo "Failure in ${{ matrix.test }}" > "${{ matrix.test }}-failure.txt"
 
       - name: Upload failure flag
-        if: always()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
           name: "${{ matrix.test }}-failure-flag"
@@ -40,22 +40,9 @@ jobs:
       - name: Check for failure flags and print their content
         id: check_failure
         run: |
-          failure_count=0
-          failed_tests=""
-          shopt -s nullglob
-          txt_files=(failure-flags/*/*.txt)
-          if [[ ${#txt_files[@]} -gt 0 ]]; then
-            for flag in "${txt_files[@]}"; do
-              if [ -f "$flag" ]; then
-                ((failure_count++))
-                test_name=$(basename $flag .txt)
-                failed_tests="$failed_tests $test_name,"
-                echo "Contents of $flag:"
-                cat "$flag"
-              fi
-            done
-          fi
-          shopt -u nullglob
+          failure_count=$(ls -1q failure-flags/*/*.txt | wc -l)
+          failed_tests=$(basename -a failure-flags/*/*.txt | tr '\n' ', ')
+          
           if [ $failure_count -gt 3 ]; then
             echo "TESTS_FAILED=true" >> $GITHUB_ENV
             echo "FAILED_TESTS=$failed_tests" >> $GITHUB_ENV
