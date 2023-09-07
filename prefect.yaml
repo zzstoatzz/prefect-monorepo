@@ -107,5 +107,5 @@ deployments:
 
   - name: healthcheck-storage-test
     entrypoint: src/demo_project/healthcheck.py:healthcheck
-    work_pool: *k8s_work_pool
+    work_pool: *local_work_pool
     pull: null
