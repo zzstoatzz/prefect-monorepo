@@ -19,9 +19,14 @@ def log_platform_info():
     )
 
 @flow(log_prints=True)
-def healthcheck(message: str = "hello, world!"):
+def healthcheck(
+    message: str = "hello, world!", introduce_exception: bool = False
+) -> str:
     
     print(message)
+
+    if introduce_exception:
+        raise ValueError("ooooo noooooo")
 
     log_platform_info()
 
