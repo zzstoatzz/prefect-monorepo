@@ -3,109 +3,132 @@ name: prefect-monorepo
 prefect-version: 2.10.20
 
 # build section allows you to manage and build docker images
-build: null
+build:
 
 # push section allows you to manage if and how this project is uploaded to remote locations
-push: null
+push:
 
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
 - prefect.deployments.steps.git_clone: &clone_repo
     repository: https://github.com/zzstoatzz/prefect-monorepo
     branch: main
-    access_token: null
+    access_token:
 
 # File for configuring project / deployment build, push and pull steps
 definitions:
-    work_pools:
-        k8s_work_pool: &k8s_work_pool
-            name: k8s
-            work_queue_name: default
-            job_variables:
-                image: "{{ build_image.image }}"
-        local_work_pool: &local_work_pool
-            name: local
-        cloud_run_work_pool: &cloud_run_work_pool
-            name: cloud run sandbox
+  work_pools:
+    k8s_work_pool: &k8s_work_pool
+      name: k8s
+      work_queue_name: default
+      job_variables:
+        image: '{{ build_image.image }}'
+    local_work_pool: &local_work_pool
+      name: local
+    cloud_run_work_pool: &cloud_run_work_pool
+      name: cloud run sandbox
 
-    schedules:
-        every_ten_minutes: &every_10_minutes
-            interval: 600
-        minutely: &minutely
-            rrule: "FREQ=MINUTELY"
-        
-    actions:
-        docker_build: &docker_build
-            - prefect_docker.deployments.steps.build_docker_image:
-                id: build-image
-                requires: prefect-docker>=0.3.11
-                image_name: zzstoatzz/prefect-monorepo
-                tag: latest
-                dockerfile: Dockerfile.demo
-        docker_push: &docker_push
-            - prefect_docker.deployments.steps.push_docker_image:
-                id: push-image
-                requires: prefect-docker>=0.3.11
-                image_name: zzstoatzz/prefect-monorepo
-                tag: latest
+  schedules:
+    every_ten_minutes: &every_10_minutes
+      interval: 600
+    minutely: &minutely
+      rrule: FREQ=MINUTELY
+  actions:
+    docker_build: &docker_build
+    - prefect_docker.deployments.steps.build_docker_image:
+        id: build-image
+        requires: prefect-docker>=0.3.11
+        image_name: zzstoatzz/prefect-monorepo
+        tag: latest
+        dockerfile: Dockerfile.demo
+    docker_push: &docker_push
+    - prefect_docker.deployments.steps.push_docker_image:
+        id: push-image
+        requires: prefect-docker>=0.3.11
+        image_name: zzstoatzz/prefect-monorepo
+        tag: latest
 
 deployments:
-  - name: healthcheck-demo
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *minutely
+- name: healthcheck-demo
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: *minutely
+  parameters:
+    message: Don't panic!
+  work_pool: *local_work_pool
+  pull:
+  - prefect.deployments.steps.git_clone:
+      <<: *clone_repo
+  - prefect.deployments.steps.run_shell_script:
+      script: echo "Hello from the healthcheck-demo project!"
+- name: foo
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: {}
+  parameters:
+    message: Don't panic!
+  work_pool:
+    <<: *local_work_pool
+    job_variables:
+      env:
+        FOO: bar
+
+  push:
+  - prefect_gcp.deployments.steps.push_to_gcs:
+      id: push-to-gcs
+      requires: prefect-gcp
+      bucket: marvin-code-storage
+      folder: prefect-monorepo
+
+  pull:
+  - prefect_gcp.deployments.steps.pull_from_gcs:
+      id: pull-from-gcs
+      requires: prefect-gcp
+      bucket: marvin-code-storage
+      folder: prefect-monorepo
+
+- name: healthcheck-demo-cloud-run-v2
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: *minutely
+  parameters:
+    message: Don't panic!
+  work_pool: *cloud_run_work_pool
+  pull:
+  - prefect.deployments.steps.git_clone:
+      <<: *clone_repo
+  - prefect.deployments.steps.run_shell_script:
+      script: echo "Hello from the healthcheck-demo project!"
+
+- name: healthcheck-docker-test
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: *every_10_minutes
+  work_pool: *k8s_work_pool
+  build: *docker_build
+  push: *docker_push
+
+- name: healthcheck-storage-test
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  work_pool:
+    name: local
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/nate/src/demos/prefect-monorepo
+  triggers:
+  - enabled: true
+    match:
+      prefect.resource.id: my.external.resource
+    expect:
+    - external.resource.pinged
     parameters:
-        message: Don't panic!
-    work_pool: *local_work_pool
-    pull:
-        - prefect.deployments.steps.git_clone:
-            <<: *clone_repo
-        - prefect.deployments.steps.run_shell_script:
-            script: echo "Hello from the healthcheck-demo project!"
-  - name: foo
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: {}
-    parameters:
-        message: "Don't panic!"
-    work_pool:
-        <<: *local_work_pool
-        job_variables:
-            env:
-                FOO: bar
+      param_1: '{{ event }}'
+    name: healthcheck-storage-test__automation_1
+  version:
+  tags: []
+  description:
+  parameters: {}
+  schedule:
 
-    push:
-        - prefect_gcp.deployments.steps.push_to_gcs:
-            id: push-to-gcs
-            requires: prefect-gcp
-            bucket: marvin-code-storage
-            folder: prefect-monorepo
-
-    pull:
-        - prefect_gcp.deployments.steps.pull_from_gcs:
-            id: pull-from-gcs
-            requires: prefect-gcp
-            bucket: marvin-code-storage
-            folder: prefect-monorepo
-
-  - name: healthcheck-demo-cloud-run-v2
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *minutely
-    parameters:
-        message: Don't panic!
-    work_pool: *cloud_run_work_pool
-    pull:
-        - prefect.deployments.steps.git_clone:
-            <<: *clone_repo
-        - prefect.deployments.steps.run_shell_script:
-            script: echo "Hello from the healthcheck-demo project!"
-
-  - name: healthcheck-docker-test
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *every_10_minutes
-    work_pool: *k8s_work_pool
-    build: *docker_build
-    push: *docker_push
-
-  - name: healthcheck-storage-test
-    entrypoint: src/demo_project/healthcheck.py:healthcheck
-    work_pool: *local_work_pool
-    pull: null
+- name: azure-push-check
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  work_pool:
+    name: ui-sandbox-worker
