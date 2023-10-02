@@ -18,7 +18,7 @@ def log_platform_info():
             f"Prefect API Version = {SERVER_API_VERSION}\n"
     )
 
-@flow(log_prints=True)
+@flow(log_prints=True, persist_result=True)
 def healthcheck(
     message: str = "hello, world!", introduce_exception: bool = False
 ) -> str:
