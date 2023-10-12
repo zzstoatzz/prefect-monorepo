@@ -109,19 +109,9 @@ deployments:
   work_pool:
     name: local
     work_queue_name:
-    job_variables: {}
-  pull:
-  - prefect.deployments.steps.set_working_directory:
-      directory: /Users/nate/src/demos/prefect-monorepo
-  triggers:
-  - enabled: true
-    match:
-      prefect.resource.id: my.external.resource
-    expect:
-    - external.resource.pinged
-    parameters:
-      param_1: '{{ event }}'
-    name: healthcheck-storage-test__automation_1
+    job_variables:
+      env:
+        PREFECT_DEFAULT_RESULT_STORAGE_BLOCK: s3/flow-script-storage
   version:
   tags: []
   description:
