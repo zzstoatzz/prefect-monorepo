@@ -1,6 +1,6 @@
 # Generic metadata about this project
 name: prefect-monorepo
-prefect-version: 2.10.20
+prefect-version: 2.14.3
 
 # build section allows you to manage and build docker images
 build:
@@ -60,30 +60,6 @@ deployments:
       <<: *clone_repo
   - prefect.deployments.steps.run_shell_script:
       script: echo "Hello from the healthcheck-demo project!"
-- name: foo
-  entrypoint: src/demo_project/healthcheck.py:healthcheck
-  schedule: {}
-  parameters:
-    message: Don't panic!
-  work_pool:
-    <<: *local_work_pool
-    job_variables:
-      env:
-        FOO: bar
-
-  push:
-  - prefect_gcp.deployments.steps.push_to_gcs:
-      id: push-to-gcs
-      requires: prefect-gcp
-      bucket: marvin-code-storage
-      folder: prefect-monorepo
-
-  pull:
-  - prefect_gcp.deployments.steps.pull_from_gcs:
-      id: pull-from-gcs
-      requires: prefect-gcp
-      bucket: marvin-code-storage
-      folder: prefect-monorepo
 
 - name: healthcheck-demo-cloud-run-v2
   entrypoint: src/demo_project/healthcheck.py:healthcheck
@@ -108,17 +84,7 @@ deployments:
   entrypoint: src/demo_project/healthcheck.py:healthcheck
   work_pool:
     name: local
-    work_queue_name:
-    job_variables:
-      env:
-        PREFECT_DEFAULT_RESULT_STORAGE_BLOCK: s3/flow-script-storage
   version:
   tags: []
   description:
   parameters: {}
-  schedule:
-
-- name: azure-push-check
-  entrypoint: src/demo_project/healthcheck.py:healthcheck
-  work_pool:
-    name: ui-sandbox-worker

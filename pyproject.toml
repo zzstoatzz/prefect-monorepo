@@ -7,21 +7,17 @@ description = "A demo monorepo for Prefect workflows."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "prefect~=2.11.2",
-    "marvin~=1.2.1",
+    "prefect~=2.14.5",
+    "marvin~=1.5.6",
 ]
 
 [project.optional-dependencies]
 
-
 dev = [
     "black[jupyter]",
     "ipython",
-    "mkdocs-autolinks-plugin~=0.7",
-    "mkdocs-awesome-pages-plugin~=2.8",
     "mkdocs-material~=9.1",
     "mkdocstrings[python]~=0.20",
-    "pandas>=2.0",
     "pdbpp~=0.10",
     "pre-commit>=2.21,<4.0",
     "pytest-asyncio~=0.20",
@@ -41,7 +37,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 
-# pytest configuration
 [tool.pytest.ini_options]
 markers = ["llm: indicates that a test calls an LLM (may be slow)."]
 
@@ -63,15 +58,12 @@ filterwarnings = [
     "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
 ]
 env = [
-    "MARVIN_LLM_TEMPERATURE=0",
-    "MARVIN_LLM_MODEL=openai/gpt-3.5-turbo",
+    "PREFECT_DEFAULT_RESULT_STORAGE_BLOCK=local-filesystem/prefect-monorepo",
 ]
 
-# black configuration
 [tool.black]
 preview = true
 
-# ruff configuration
 [tool.ruff]
 extend-select = ["I"]
 
