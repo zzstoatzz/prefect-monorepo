@@ -36,8 +36,8 @@ def get_time_range(
 @flow(retries=1)
 def downstream_workflow(start: datetime, end: datetime):
     # globals not recommended, we're just showing that retries occur with same inputs
-    global observed
-    observed.update({(start, end): get_run_context().flow_run.run_count})
+    global data
+    data.update({(start, end): get_run_context().flow_run.run_count})
     print(f"Running downstream workflow from {start} to {end}...")
     raise ValueError("oops i failed this time")
 
@@ -45,13 +45,13 @@ def downstream_workflow(start: datetime, end: datetime):
 def daily_flow(start: datetime | None = None, end: datetime | None = None):
     start, end = get_time_range(start, end)
     
-    global observed # again, globals not recommended
-    observed = dict()
+    global data # again, avoid globals in practice, use redis or something
+    data = dict()
         
     downstream_workflow(start, end, return_state=True) # return state to avoid raising
         
-    used_one_dt_range = len(observed) == 1 and observed.keys() == {(start, end)}
-    ran_subflow_twice = observed.get((start, end)) == 2
+    used_one_dt_range = len(data) == 1 and data.keys() == {(start, end)}
+    ran_subflow_twice = data.get((start, end)) == 2
     
     if used_one_dt_range and ran_subflow_twice:
         return "Failed successfully!"
