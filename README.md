@@ -4,9 +4,11 @@ this repo leverages [Prefect's declarative yaml deployment UX `prefect.yaml`](ht
 
 ## flows
 - [healthcheck](src/demo_project/healthcheck.py)
+- [daily-flow](src/demo_project/daily_flow.py)
 
-### which are defined like
-this, using the [`prefect.yaml`](prefect.yaml) file to define the deployment and its reusuable components (e.g. a work pool like `local_work_pool` and a `pull` step like `clone_repo`):
+### which are defined in one of a few ways:
+#### [`prefect.yaml`](prefect.yaml)
+to define the deployment and its reusuable components (e.g. a work pool like `local_work_pool` and a `pull` step like `clone_repo`):
 ```yaml
 deployments:
   - name: healthcheck-demo
@@ -20,6 +22,18 @@ deployments:
             <<: *clone_repo
         - prefect.deployments.steps.run_shell_script:
             script: echo "Hello from the healthcheck-demo project!"
+```
+#### python
+using `from_source` and `.deploy`
+```python
+flow.from_source(
+    source="https://github.com/zzstoatzz/prefect-monorepo.git",
+    entrypoint="src/demo_project/daily_flow.py:daily_flow"
+).deploy(
+    name="My Daily Flow Deployment",
+    schedule={"cron": "0 14 * * *"},
+    work_pool_name="prefect-managed"
+)
 ```
 
 ## pre-reqs for doing this yourself
