@@ -1,13 +1,28 @@
 # sample `prefect-monorepo`
+this repo houses some prefect deployment patterns and auxillary ci/cd resources
 
-this repo leverages [Prefect's declarative yaml deployment UX `prefect.yaml`](https://docs.prefect.io/2.11.1/concepts/deployments-ux/#the-prefect-yaml-file) alongside a [GitHub Action](https://github.com/zzstoatzz/prefect-monorepo/blob/main/.github/workflows/env-separated-deploy.yml) to create deployments from a monorepo (only when the flow source code changes).
-
-## flows
+## flows that live in this repo
 - [healthcheck](src/demo_project/healthcheck.py)
 - [daily-flow](src/demo_project/daily_flow.py)
 
-### which are defined in one of a few ways:
+### deployments of which are defined in one of a few ways:
+#### python
+**note**: best for a quick start or very dynamic deployment definitions
+
+using `from_source` and `.deploy` to programmatically create deployments:
+```python
+flow.from_source(
+    source="https://github.com/zzstoatzz/prefect-monorepo.git",
+    entrypoint="src/demo_project/daily_flow.py:daily_flow"
+).deploy(
+    name="My Daily Flow Deployment",
+    schedule={"cron": "0 14 * * *"},
+    work_pool_name="prefect-managed"
+)
+```
 #### [`prefect.yaml`](prefect.yaml)
+**note**: best for a more static, declarative deployment definition pattern
+
 to define deployments and reusuable components (e.g. a work pool `local_work_pool` and/or `pull` step `clone_repo`):
 ```yaml
 deployments:
@@ -22,18 +37,6 @@ deployments:
             <<: *clone_repo
         - prefect.deployments.steps.run_shell_script:
             script: echo "Hello from the healthcheck-demo project!"
-```
-#### python
-using `from_source` and `.deploy` to programmatically create deployments:
-```python
-flow.from_source(
-    source="https://github.com/zzstoatzz/prefect-monorepo.git",
-    entrypoint="src/demo_project/daily_flow.py:daily_flow"
-).deploy(
-    name="My Daily Flow Deployment",
-    schedule={"cron": "0 14 * * *"},
-    work_pool_name="prefect-managed"
-)
 ```
 
 ## pre-reqs for doing this yourself
