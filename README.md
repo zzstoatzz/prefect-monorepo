@@ -8,7 +8,7 @@ this repo leverages [Prefect's declarative yaml deployment UX `prefect.yaml`](ht
 
 ### which are defined in one of a few ways:
 #### [`prefect.yaml`](prefect.yaml)
-to define the deployment and its reusuable components (e.g. a work pool like `local_work_pool` and a `pull` step like `clone_repo`):
+to define deployments and reusuable components (e.g. a work pool `local_work_pool` and/or `pull` step `clone_repo`):
 ```yaml
 deployments:
   - name: healthcheck-demo
@@ -24,7 +24,7 @@ deployments:
             script: echo "Hello from the healthcheck-demo project!"
 ```
 #### python
-using `from_source` and `.deploy`
+using `from_source` and `.deploy` to programmatically create deployments:
 ```python
 flow.from_source(
     source="https://github.com/zzstoatzz/prefect-monorepo.git",
