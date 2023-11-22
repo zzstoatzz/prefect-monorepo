@@ -11,6 +11,8 @@ this repo houses some prefect deployment patterns and auxillary ci/cd resources
 
 using `from_source` and `.deploy` to programmatically create deployments:
 ```python
+from prefect import flow
+
 flow.from_source(
     source="https://github.com/zzstoatzz/prefect-monorepo.git",
     entrypoint="src/demo_project/daily_flow.py:daily_flow"
