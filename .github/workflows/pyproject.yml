@@ -1,0 +1,26 @@
+name: Deploy a Prefect flow (installing dependencies from pyproject.toml)
+on:
+  push:
+    branches:
+      - pyproject
+jobs:
+  deploy_flow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Prefect Auth
+        uses: PrefectHQ/actions-prefect-auth@v1
+        with:
+          prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
+          prefect-workspace: "prefect-sandbox/inconspicuous-pond"
+
+      - name: Run Prefect Deploy
+        uses: PrefectHQ/actions-prefect-deploy@pyproject
+        with:
+          deployment-names: healthcheck-demo
+          pyproject-toml-path: pyproject.toml
