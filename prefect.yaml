@@ -88,3 +88,22 @@ deployments:
   tags: []
   description:
   parameters: {}
+
+- name: host-env-test
+  entrypoint: src/demo_project/read_env.py:read_env
+  work_pool:
+    name: docker-work
+    job_variables:
+      image: "{{ build_image.image }}"
+      env: 
+        MAMBA_ROOT_PREFIX: "{{ $MAMBA_ROOT_PREFIX }}"
+  pull:
+  - prefect.deployments.steps.git_clone:
+      id: clone-repo
+      repository: https://github.com/zzstoatzz/prefect-monorepo
+      branch: main
+      access_token:
+  - prefect.deployments.steps.run_shell_script:
+      script: ls -la
+  - prefect.deployments.steps.set_working_directory:
+      directory: "{{ clone-repo.directory }}"
