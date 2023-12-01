@@ -88,11 +88,7 @@ deployments:
   description:
   parameters: {}
 
-- name: host-env-test
-  entrypoint: src/demo_project/read_env.py:read_env
+- name: random-flow
+  entrypoint: src/demo_project/test.py:random_flow
   work_pool:
-    name: docker-work
-    job_variables:
-      image: "{{ build_image.image }}"
-      env: 
-        MAMBA_ROOT_PREFIX: "{{ $MAMBA_ROOT_PREFIX }}"
+    name: local
