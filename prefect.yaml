@@ -33,6 +33,10 @@ definitions:
     minutely: &minutely
       rrule: FREQ=MINUTELY
   actions:
+    dev_clone: &dev_clone
+    - prefect.deployments.steps.git_clone:
+        repository: https://github.com/zzstoatzz/prefect-monorepo
+        branch: dev
     docker_build: &docker_build
     - prefect_docker.deployments.steps.build_docker_image:
         id: build-image
@@ -92,3 +96,4 @@ deployments:
   entrypoint: src/demo_project/test.py:random_flow
   work_pool:
     name: local
+  pull: *dev_clone
