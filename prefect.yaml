@@ -24,8 +24,6 @@ definitions:
         image: '{{ build_image.image }}'
     local_work_pool: &local_work_pool
       name: local
-    cloud_run_work_pool: &cloud_run_work_pool
-      name: cloud run sandbox
 
   schedules:
     every_ten_minutes: &every_10_minutes
@@ -60,17 +58,6 @@ deployments:
   - prefect.deployments.steps.run_shell_script:
       script: echo "Hello from the healthcheck-demo project!"
 
-- name: healthcheck-demo-cloud-run-v2
-  entrypoint: src/demo_project/healthcheck.py:healthcheck
-  schedule: *minutely
-  parameters:
-    message: Don't panic!
-  work_pool: *cloud_run_work_pool
-  pull:
-  - prefect.deployments.steps.git_clone:
-      <<: *clone_repo
-  - prefect.deployments.steps.run_shell_script:
-      script: echo "Hello from the healthcheck-demo project!"
 
 - name: healthcheck-docker-test
   entrypoint: src/demo_project/healthcheck.py:healthcheck
@@ -82,7 +69,7 @@ deployments:
 - name: healthcheck-storage-test
   entrypoint: src/demo_project/healthcheck.py:healthcheck
   work_pool:
-    name: local
+    name: managed
   version:
   tags: []
   description:
@@ -92,3 +79,16 @@ deployments:
   entrypoint: src/demo_project/test.py:random_flow
   work_pool:
     name: local
+
+
+- name: custom-clone-dir
+  entrypoint: src/demo_project/test.py:random_flow
+  work_pool:
+    name: local
+  schedule: null
+  pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/zzstoatzz/prefect-monorepo
+      target_directory: "{{ repository }}"
+  - prefect.deployments.steps.run_shell_script:
+      script: ls prefect-monorepo

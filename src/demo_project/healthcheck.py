@@ -1,5 +1,6 @@
 import platform
 import sys
+import time
 
 import typer
 from prefect import __version__ as PREFECT_SDK_VERSION
@@ -33,13 +34,20 @@ def log_platform_info():
     )
 
 @flow(on_completion=[ping_if_stale_version])
-def healthcheck(message: str, introduce_exception) -> str:
+def healthcheck(
+    message: str,
+    introduce_exception: bool = False,
+    sleep: int | None = None
+) -> Completed:
     console.print(f"{message}")
 
     if introduce_exception:
         raise ValueError("ooooo noooooo")
 
     log_platform_info()
+    
+    if sleep:
+        time.sleep(sleep)
 
     return Completed(message="Healthcheck completed.")
 
