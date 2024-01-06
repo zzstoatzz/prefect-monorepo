@@ -81,14 +81,15 @@ deployments:
     name: local
 
 
-- name: custom-clone-dir
+- name: target-clone-dir
   entrypoint: src/demo_project/test.py:random_flow
   work_pool:
     name: local
+    job_variables:
+      working_dir: /Users/nate/src/demos/prefect-monorepo/test
   schedule: null
   pull:
   - prefect.deployments.steps.git_clone:
       repository: https://github.com/zzstoatzz/prefect-monorepo
-      target_directory: "{{ repository }}"
   - prefect.deployments.steps.run_shell_script:
-      script: ls prefect-monorepo
+      script: pwd
