@@ -1,12 +1,16 @@
+import emoji
+from prefect import flow
 
-from prefect import flow, task
-
-
-@task
-def some_random_task(message: str = "Hello world"):
-    print(message)
-    return message
 
 @flow(log_prints=True)
 def random_flow():
-    some_random_task()
+    print(emoji.emojize("Hello world :sun_with_face:"))
+
+if __name__ == "__main__":
+    random_flow.from_source(
+        source="https://github.com/zzstoatzz/prefect-monorepo.git",
+        entrypoint="src/demo_project/test.py:random_flow",
+    ).deploy(
+        __file__,
+        work_pool_name="k8s",
+    )

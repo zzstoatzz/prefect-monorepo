@@ -1,0 +1,5 @@
+FROM prefecthq/prefect:2-latest
+
+RUN pip install emoji
+
+COPY . /opt/prefect/demo_project
