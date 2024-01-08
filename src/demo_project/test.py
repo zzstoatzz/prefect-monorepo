@@ -1,5 +1,6 @@
 import emoji
 from prefect import flow
+from prefect.deployments import DeploymentImage
 
 
 @flow(log_prints=True)
@@ -13,4 +14,8 @@ if __name__ == "__main__":
     ).deploy(
         "test-k8s",
         work_pool_name="k8s",
+        image=DeploymentImage(
+            name="docker.io/zzstoatzz/prefect-monorepo",
+            dockerfile="Dockerfile.test",
+        ),
     )
