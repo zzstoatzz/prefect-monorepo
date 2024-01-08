@@ -11,6 +11,6 @@ if __name__ == "__main__":
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
         entrypoint="src/demo_project/test.py:random_flow",
     ).deploy(
-        __file__,
+        "test-k8s",
         work_pool_name="k8s",
     )
