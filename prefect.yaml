@@ -93,3 +93,16 @@ deployments:
       repository: https://github.com/zzstoatzz/prefect-monorepo
   - prefect.deployments.steps.run_shell_script:
       script: pwd
+
+- name: clone-then-install
+  entrypoint: src/demo_project/test.py:random_flow
+  work_pool:
+    name: k8s
+  schedule: null
+  pull:
+  - prefect.deployments.steps.git_clone:
+      id: clone-repo
+      repository: https://github.com/zzstoatzz/prefect-monorepo
+  - prefect.deployments.steps.pip_install_requirements:
+      directory: '{{ clone-repo.directory }}'
+      requirements_file: requirements.txt
