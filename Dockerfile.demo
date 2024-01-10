@@ -1,1 +1,7 @@
 FROM prefecthq/prefect:2-python3.11
+
+COPY . /opt/prefect
+
+WORKDIR /opt/prefect
+
+RUN pip install -r requirements.txt

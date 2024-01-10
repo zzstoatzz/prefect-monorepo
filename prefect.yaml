@@ -106,3 +106,14 @@ deployments:
   - prefect.deployments.steps.pip_install_requirements:
       directory: '{{ clone-repo.directory }}'
       requirements_file: requirements.txt
+
+- name: set-working-directory
+  entrypoint: src/demo_project/no_deps.py:independent_flow
+  work_pool:
+    name: k8s
+    job_variables:
+      image: zzstoatzz/prefect-monorepo:foo
+  schedule: null
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/
