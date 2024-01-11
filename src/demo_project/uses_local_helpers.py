@@ -9,7 +9,7 @@ def uses_helper() -> int:
 if __name__ == "__main__":
     uses_helper.from_source(
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
-        entrypoint="src/demo_project/relative_import_deps.py:uses_helper",
+        entrypoint="src/demo_project/uses_local_helpers.py:uses_helper",
     ).deploy(
         "uses-relative-helper",
         work_pool_name="k8s",
