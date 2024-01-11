@@ -11,7 +11,7 @@ if __name__ == "__main__":
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
         entrypoint="src/demo_project/uses_local_helpers.py:uses_helper",
     ).deploy(
-        "uses-relative-helper",
+        "uses-local-helpers",
         work_pool_name="k8s",
         build=False,
     )
