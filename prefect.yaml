@@ -69,7 +69,7 @@ deployments:
 - name: healthcheck-storage-test
   entrypoint: src/demo_project/healthcheck.py:healthcheck
   work_pool:
-    name: managed
+    name: k8s
   version:
   tags: []
   description:
@@ -117,3 +117,12 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory:
       directory: /opt/prefect/
+
+- name: accepts-plumbus
+  entrypoint: src/demo_project/accepts_model.py:use_plumbus
+  work_pool:
+    name: k8s
+  parameters:
+    plumbus:
+      size: 3
+      color: blue
