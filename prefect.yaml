@@ -126,3 +126,13 @@ deployments:
     plumbus:
       size: 3
       color: blue
+
+- name: demo-deployment
+  entrypoint: src/demo_project/demo_flow.py:some_work
+  work_pool:
+    name: local
+    job_variables:
+      env:
+        EXECUTION_ENVIRONMENT: "{{ $EXECUTION_ENVIRONMENT }}"
+        MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
+  schedule: null
