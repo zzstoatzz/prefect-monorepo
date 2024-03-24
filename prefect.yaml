@@ -137,8 +137,8 @@ deployments:
         MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
   schedule: null
 
-- name: receives-webhook-event
-  entrypoint: src/demo_project/receives_webhook_event.py:handle_webhook_event
+- name: write-welcome-email
+  entrypoint: src/demo_project/write_email_to_user.py:compose_email
   work_pool:
     name: local
   triggers:
