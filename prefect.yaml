@@ -136,3 +136,18 @@ deployments:
         EXECUTION_ENVIRONMENT: "{{ $EXECUTION_ENVIRONMENT }}"
         MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
   schedule: null
+
+- name: receives-webhook-event
+  entrypoint: src/demo_project/receives_webhook_event.py:handle_webhook_event
+  work_pool:
+    name: local
+  triggers:
+  - enabled: true
+    match:
+      prefect.resource.id: some.external.resource.*
+    expect:
+      - external.resource.pinged
+    parameters:
+      id: "{{ event.resource.get('prefect.resource.id') }}"
+      first_name: "{{ event.resource.get('first_name') }}"
+      last_name: "{{ event.resource.get('last_name') }}"
