@@ -75,11 +75,6 @@ deployments:
   description:
   parameters: {}
 
-- name: random-flow
-  entrypoint: src/demo_project/test.py:random_flow
-  work_pool:
-    name: local
-
 
 - name: target-clone-dir
   entrypoint: src/demo_project/test.py:random_flow
@@ -97,7 +92,7 @@ deployments:
 - name: clone-then-install
   entrypoint: src/demo_project/test.py:random_flow
   work_pool:
-    name: k8s
+    name: docker-work
   schedule: null
   pull:
   - prefect.deployments.steps.git_clone:
