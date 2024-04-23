@@ -18,14 +18,21 @@ class FlowInput(BaseModel):
 
 @flow
 def process_input(flow_input: FlowInput, num: NonNegativeInt):
-    pass
+    print(flow_input)
+    print(num)
 
 
 if __name__ == "__main__":
-    process_input(
-        flow_input={
-            "user": {"name": "John", "age": 30},
-            "other_user": {"name": "Jane", "age": 25},
-        },
-        num=-1,
+    process_input.from_source(
+        source="https://github.com/zzstoatzz/prefect-monorepo.git",
+        entrypoint="src/demo_project/validating_types.py",
+    ).deploy(
+        parameters=dict(
+            flow_input={
+                "user": {"name": "John", "age": 30},
+                "other_user": {"name": "Jane", "age": 25},
+            },
+            num=-1,
+        ),
+        work_pool_name="managed",
     )
