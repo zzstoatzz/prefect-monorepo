@@ -25,14 +25,15 @@ def process_input(flow_input: FlowInput, num: NonNegativeInt):
 if __name__ == "__main__":
     process_input.from_source(
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
-        entrypoint="src/demo_project/validating_types.py",
+        entrypoint="src/demo_project/validating_types.py:process_input",
     ).deploy(
+        name="process_input",
         parameters=dict(
             flow_input={
                 "user": {"name": "John", "age": 30},
                 "other_user": {"name": "Jane", "age": 25},
             },
-            num=-1,
+            num=0,
         ),
         work_pool_name="managed",
     )
