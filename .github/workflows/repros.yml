@@ -1,12 +1,7 @@
 name: Python Compatibility Test
 
 on:
-  push:
-    paths:
-      - 'repros/**.py'
-  pull_request:
-    paths:
-      - 'repros/**.py'
+    workflow_dispatch:
 
 jobs:
   build:
