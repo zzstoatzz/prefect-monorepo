@@ -23,9 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        # Optionally install dependencies here, for example:
-        # pip install -r requirements.txt
+        python -m pip install --upgrade pip prefect aiohttp
 
     - name: Run Python files in repros/ (Windows)
       if: runner.os == 'Windows'
