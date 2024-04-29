@@ -3,6 +3,10 @@ name: Python Compatibility Test
 on:
   workflow_dispatch:
 
+env:
+    PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+    PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
