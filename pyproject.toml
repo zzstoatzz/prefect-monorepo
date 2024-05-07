@@ -6,10 +6,7 @@ dynamic = ["version"]
 description = "A demo monorepo for Prefect workflows."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "prefect~=2.14.5",
-    "marvin~=1.5.6",
-]
+dependencies = ["prefect~=2.14.5", "marvin~=1.5.6"]
 
 [project.optional-dependencies]
 
@@ -56,9 +53,6 @@ asyncio_mode = 'auto'
 
 filterwarnings = [
     "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
-]
-env = [
-    "PREFECT_DEFAULT_RESULT_STORAGE_BLOCK=local-filesystem/prefect-monorepo",
 ]
 
 [tool.black]

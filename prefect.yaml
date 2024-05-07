@@ -54,106 +54,106 @@ definitions:
         tag: latest
 
 deployments:
-# - name: healthcheck-demo
-#   entrypoint: src/demo_project/healthcheck.py:healthcheck
-#   schedule: *minutely
-#   parameters:
-#     message: Don't panic!
-#   work_pool: *local_work_pool
-#   pull:
-#   - prefect.deployments.steps.git_clone:
-#       <<: *clone_repo
-#   - prefect.deployments.steps.run_shell_script:
-#       script: echo "Hello from the healthcheck-demo project!"
+- name: healthcheck-demo
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: *minutely
+  parameters:
+    message: Don't panic!
+  work_pool: *local_work_pool
+  pull:
+  - prefect.deployments.steps.git_clone:
+      <<: *clone_repo
+  - prefect.deployments.steps.run_shell_script:
+      script: echo "Hello from the healthcheck-demo project!"
 
 
-# - name: healthcheck-docker-test
-#   entrypoint: src/demo_project/healthcheck.py:healthcheck
-#   schedule: *every_10_minutes
-#   work_pool: *k8s_work_pool
-#   build: *docker_build
-#   push: *docker_push
+- name: healthcheck-docker-test
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  schedule: *every_10_minutes
+  work_pool: *k8s_work_pool
+  build: *docker_build
+  push: *docker_push
 
-# - name: healthcheck-storage-test
-#   entrypoint: src/demo_project/healthcheck.py:healthcheck
-#   work_pool:
-#     name: k8s
-#   version:
-#   tags: []
-#   description:
-#   parameters: {}
+- name: healthcheck-storage-test
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  work_pool:
+    name: k8s
+  version:
+  tags: []
+  description:
+  parameters: {}
 
 
-# - name: target-clone-dir
-#   entrypoint: src/demo_project/test.py:random_flow
-#   work_pool:
-#     name: local
-#     job_variables:
-#       working_dir: /Users/nate/src/demos/prefect-monorepo/test
-#   schedule: null
-#   pull:
-#   - prefect.deployments.steps.git_clone:
-#       repository: https://github.com/zzstoatzz/prefect-monorepo
-#   - prefect.deployments.steps.run_shell_script:
-#       script: pwd
+- name: target-clone-dir
+  entrypoint: src/demo_project/test.py:random_flow
+  work_pool:
+    name: local
+    job_variables:
+      working_dir: /Users/nate/src/demos/prefect-monorepo/test
+  schedule: null
+  pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/zzstoatzz/prefect-monorepo
+  - prefect.deployments.steps.run_shell_script:
+      script: pwd
 
-# - name: clone-then-install
-#   entrypoint: src/demo_project/test.py:random_flow
-#   work_pool:
-#     name: docker-work
-#   schedule: null
-#   pull:
-#   - prefect.deployments.steps.git_clone:
-#       id: clone-repo
-#       repository: https://github.com/zzstoatzz/prefect-monorepo
-#   - prefect.deployments.steps.pip_install_requirements:
-#       directory: '{{ clone-repo.directory }}'
-#       requirements_file: requirements.txt
+- name: clone-then-install
+  entrypoint: src/demo_project/test.py:random_flow
+  work_pool:
+    name: docker-work
+  schedule: null
+  pull:
+  - prefect.deployments.steps.git_clone:
+      id: clone-repo
+      repository: https://github.com/zzstoatzz/prefect-monorepo
+  - prefect.deployments.steps.pip_install_requirements:
+      directory: '{{ clone-repo.directory }}'
+      requirements_file: requirements.txt
 
-# - name: set-working-directory
-#   entrypoint: src/demo_project/no_deps.py:independent_flow
-#   work_pool:
-#     name: k8s
-#     job_variables:
-#       image: zzstoatzz/prefect-monorepo:foo
-#   schedule: null
-#   pull:
-#   - prefect.deployments.steps.set_working_directory:
-#       directory: /opt/prefect/
+- name: set-working-directory
+  entrypoint: src/demo_project/no_deps.py:independent_flow
+  work_pool:
+    name: k8s
+    job_variables:
+      image: zzstoatzz/prefect-monorepo:foo
+  schedule: null
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/
 
-# - name: accepts-plumbus
-#   entrypoint: src/demo_project/accepts_model.py:use_plumbus
-#   work_pool:
-#     name: k8s
-#   parameters:
-#     plumbus:
-#       size: 3
-#       color: blue
+- name: accepts-plumbus
+  entrypoint: src/demo_project/accepts_model.py:use_plumbus
+  work_pool:
+    name: k8s
+  parameters:
+    plumbus:
+      size: 3
+      color: blue
 
-# - name: demo-deployment
-#   entrypoint: src/demo_project/demo_flow.py:some_work
-#   work_pool:
-#     name: local
-#     job_variables:
-#       env:
-#         EXECUTION_ENVIRONMENT: "{{ $EXECUTION_ENVIRONMENT }}"
-#         MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
-#   schedule: null
+- name: demo-deployment
+  entrypoint: src/demo_project/demo_flow.py:some_work
+  work_pool:
+    name: local
+    job_variables:
+      env:
+        EXECUTION_ENVIRONMENT: "{{ $EXECUTION_ENVIRONMENT }}"
+        MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
+  schedule: null
 
-# - name: write-welcome-email
-#   entrypoint: src/demo_project/write_email_to_user.py:compose_email
-#   work_pool:
-#     name: local
-#   triggers:
-#   - enabled: true
-#     match:
-#       prefect.resource.id: some.external.resource.*
-#     expect:
-#       - external.resource.pinged
-#     parameters:
-#       id: "{{ event.resource.get('prefect.resource.id') }}"
-#       first_name: "{{ event.resource.get('first_name') }}"
-#       last_name: "{{ event.resource.get('last_name') }}"
+- name: write-welcome-email
+  entrypoint: src/demo_project/write_email_to_user.py:compose_email
+  work_pool:
+    name: local
+  triggers:
+  - enabled: true
+    match:
+      prefect.resource.id: some.external.resource.*
+    expect:
+      - external.resource.pinged
+    parameters:
+      id: "{{ event.resource.get('prefect.resource.id') }}"
+      first_name: "{{ event.resource.get('first_name') }}"
+      last_name: "{{ event.resource.get('last_name') }}"
 
 ## comment out all but these 2 to clearly demonstrate caching
 - name: set-working-directory-cached-build
@@ -179,3 +179,15 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory:
       directory: /opt/prefect/
+
+- name: test
+  entrypoint: src/demo_project/healthcheck.py:healthcheck
+  build: null
+  work_pool:
+    name: docker-work
+    job_variables:
+      image: works-fine:local
+  schedule: null
+  pull:
+  - prefect.deployments.steps.git_clone:
+      repository:
