@@ -187,7 +187,8 @@ deployments:
     name: docker-work
     job_variables:
       image: works-fine:local
-  schedule: null
+  schedules:
+    - cron: "*/15 0 * * *"
   pull:
   - prefect.deployments.steps.git_clone:
       repository:
