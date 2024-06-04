@@ -189,6 +189,3 @@ deployments:
       image: works-fine:local
   schedules:
     - cron: "*/15 0 * * *"
-  pull:
-  - prefect.deployments.steps.git_clone:
-      repository:

@@ -1,4 +1,5 @@
 from prefect import flow
+from prefect.client.schemas.schedules import CronSchedule
 
 
 @flow
@@ -13,5 +14,7 @@ if __name__ == "__main__":
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
         entrypoint="src/demo_project/sleepy.py:sleepy",
     ).deploy(
+        name="sleepy-local",
         work_pool_name="local",
+        schedules=[CronSchedule(cron="* * * * *", max_active_runs=1)],
     )

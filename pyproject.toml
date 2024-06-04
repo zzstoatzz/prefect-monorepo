@@ -6,7 +6,7 @@ dynamic = ["version"]
 description = "A demo monorepo for Prefect workflows."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["prefect~=2.14.5", "marvin~=1.5.6"]
+dependencies = ["prefect>=3.0.0rc1", "marvin~=2.3.4"]
 
 [project.optional-dependencies]
 
