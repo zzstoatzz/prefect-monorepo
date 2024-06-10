@@ -1,9 +1,10 @@
 from prefect import flow
+from prefect.states import Failed
 
 
 @flow
 def boom_crash():
-    raise ValueError
+    return Failed()
 
 
 if __name__ == "__main__":
