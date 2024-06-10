@@ -1,10 +1,9 @@
 from prefect import flow
-from prefect.states import Failed
 
 
 @flow
 def boom_crash():
-    return Failed()
+    raise SystemExit("Boom crash")
 
 
 if __name__ == "__main__":
