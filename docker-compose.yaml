@@ -1,0 +1,14 @@
+services:
+  prefect:
+    image: prefecthq/prefect:3.0.0rc2-python3.12
+    environment:
+      PREFECT_HOME: /data
+    command: prefect server start --host 0.0.0.0
+    ports:
+      - "4200:4200" # host 4200 on my machine
+    volumes:
+      - prefect-data:/data
+      - .:/app
+
+volumes:
+  prefect-data: {}

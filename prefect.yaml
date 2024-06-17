@@ -155,6 +155,13 @@ deployments:
       first_name: "{{ event.resource.get('first_name') }}"
       last_name: "{{ event.resource.get('last_name') }}"
 
+- name: hello-docker
+  entrypoint: src/demo_project/hello_docker.py:hello_docker
+  work_pool:
+    name: docker-work
+    job_variables:
+      image: prefecthq/prefect:3.0.0rc2-python3.12
+
 ## comment out all but these 2 to clearly demonstrate caching
 - name: set-working-directory-cached-build
   entrypoint: src/demo_project/no_deps.py:independent_flow
