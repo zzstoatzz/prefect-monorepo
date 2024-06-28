@@ -1,0 +1,32 @@
+name: Run Worker Script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+    PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+    PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+
+jobs:
+  run-worker:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -U prefect
+    
+    - name: Run worker script
+      run: python scripts/run_worker_for_a_bit.py

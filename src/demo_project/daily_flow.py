@@ -65,5 +65,5 @@ if __name__ == "__main__":
     ).deploy(
         name="My Daily Flow Deployment",
         schedule={"cron": "0 14 * * *"},
-        work_pool_name="managed",
+        work_pool_name="local",
     )
