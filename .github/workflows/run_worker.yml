@@ -21,8 +21,9 @@ jobs:
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -U prefect
+        python -m pip install --upgrade pip uv
+        uv venv
+        uv pip install -U prefect
     
     - name: Run worker script
       run: python scripts/run_worker_for_a_bit.py
