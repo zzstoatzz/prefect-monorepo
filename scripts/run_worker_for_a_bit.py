@@ -1,10 +1,12 @@
 import subprocess
 
-from prefect.utilities.timeout import timeout_async
+from prefect.utilities.timeout import timeout
 
 
-async def main():
-    with timeout_async(100):
-        await subprocess.run(
-            ["prefect", "worker", "start", "--pool", "local"], check=True
-        )
+def main():
+    with timeout(100):
+        subprocess.run(["prefect", "worker", "start", "--pool", "local"], check=True)
+
+
+if __name__ == "__main__":
+    main()
