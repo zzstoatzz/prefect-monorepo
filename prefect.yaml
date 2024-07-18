@@ -11,7 +11,7 @@ push:
 # pull section allows you to provide instructions for cloning this project in remote locations
 pull:
 - prefect.deployments.steps.git_clone: &clone_repo
-    repository: https://github.com/zzstoatzz/prefect-monorepo
+    repository: https://github.com/zzstoatzz/prefect-bonorepo
     branch: main
 
 # File for configuring project / deployment build, push and pull steps
@@ -192,7 +192,5 @@ deployments:
   build: null
   work_pool:
     name: docker-work
-    job_variables:
-      image: works-fine:local
   schedules:
     - cron: "*/15 0 * * *"
