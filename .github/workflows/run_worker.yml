@@ -23,6 +23,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip uv
         uv venv
-        uv pip install -U prefect-docker --pre
+        uv pip install --system -U prefect-docker --pre
         python scripts/run_worker_for_a_bit.py
   
