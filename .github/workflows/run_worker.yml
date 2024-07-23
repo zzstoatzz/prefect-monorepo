@@ -19,11 +19,10 @@ jobs:
       with:
         python-version: '3.12'
     
-    - name: Install dependencies
+    - name: Install deps and run worker
       run: |
         python -m pip install --upgrade pip uv
         uv venv
         uv pip install -U prefect-docker --pre
-    
-    - name: Run the worker
-      run: python scripts/run_worker_for_a_bit.py
+        python scripts/run_worker_for_a_bit.py
+  
