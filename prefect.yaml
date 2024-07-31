@@ -192,6 +192,8 @@ deployments:
   build: null
   work_pool:
     name: docker-work
+    job_variables:
+      image: some-image:local
   schedules:
     - cron: "*/15 0 * * *"
   
