@@ -4,4 +4,8 @@ COPY . /opt/prefect
 
 WORKDIR /opt/prefect
 
+ARG TOKEN
+
+ENV TOKEN=$TOKEN
+
 RUN pip install -r requirements.txt

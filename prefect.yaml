@@ -38,6 +38,9 @@ definitions:
         image_name: zzstoatzz/prefect-monorepo
         tag: latest
         dockerfile: Dockerfile.demo
+        buildargs:
+          TOKEN: "{{ $TOKEN }}"
+
     cached_docker_build: &cached_docker_build
     - demo_project.steps.docker.cached_build_docker_image:
         id: build-image
@@ -72,7 +75,7 @@ deployments:
   schedule: *every_10_minutes
   work_pool: *k8s_work_pool
   build: *docker_build
-  push: *docker_push
+  # push: *docker_push
 
 - name: healthcheck-storage-test
   entrypoint: src/demo_project/healthcheck.py:healthcheck
