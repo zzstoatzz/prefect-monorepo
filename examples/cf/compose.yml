@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-securePassword}
+      POSTGRES_DB: ${POSTGRES_DB:-prefect}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  prefect:
+    image: prefecthq/prefect:3.0.0-python3.11
+    depends_on:
+      - db
+    environment:
+
+      PREFECT_API_DATABASE_CONNECTION_URL: "postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-securePassword}@db:5432/${POSTGRES_DB:-prefect}"
+    ports:
+      - "4200:4200"
+    command: prefect server start --host 0.0.0.0
+
+  api:
+    command: python api.py
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      PREFECT_API_URL: http://prefect:4200/api
+      PREFECT_CLIENT_CSRF_SUPPORT_ENABLED: false
+      PREFECT_LOCAL_STORAGE_PATH: /api-storage
+      PREFECT_LOGGING_LEVEL: INFO
+    ports:
+      - "8000:8000"
+    depends_on:
+      - prefect
+    volumes:
+      - api-storage:/api-storage
+volumes:
+  postgres_data:
+    name: prefect-postgres-data
+  api-storage:
+    name: prefect-api-storage
