@@ -96,7 +96,7 @@ jobs:
       - name: Schedule a run and then stream pod logs
         run: |
           prefect deployment run 'random-flow/test-k8s'
-          echo "Start tailing logs for $WORKER_POD_NAME"
+          echo "\n\nStart tailing logs for $WORKER_POD_NAME\n\n"
           kubectl logs -f $WORKER_POD_NAME -n prefect
         
         env:
