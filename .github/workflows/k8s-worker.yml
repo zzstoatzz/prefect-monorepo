@@ -41,7 +41,7 @@ jobs:
         run: |
           kubectl create secret generic prefect-api-key \
             --namespace=prefect \
-            --from-literal=key=$(echo -n $PREFECT_API_KEY | base64)
+            --from-literal=key=$(echo -n $PREFECT_API_KEY)
 
       - name: Configure values.yaml
         run: |
@@ -96,7 +96,9 @@ jobs:
       - name: Schedule a run and then stream pod logs
         run: |
           prefect deployment run 'random-flow/test-k8s'
-          echo "\n\nStart tailing logs for $WORKER_POD_NAME\n\n"
+          echo "----------------------------------------"
+          echo "Start tailing logs for $WORKER_POD_NAME"
+          echo "----------------------------------------"
           kubectl logs -f $WORKER_POD_NAME -n prefect
         
         env:
