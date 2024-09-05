@@ -91,7 +91,7 @@ jobs:
       - name: Install python deps
         run: |
           python -m pip install -U uv
-          uv pip install git+https://github.com/prefecthq/prefect.git
+          uv pip install --system git+https://github.com/prefecthq/prefect.git
 
       - name: Schedule a run and then stream pod logs
         run: |
