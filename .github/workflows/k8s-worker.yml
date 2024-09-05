@@ -58,12 +58,14 @@ jobs:
         run: |
           helm install prefect-worker prefect/prefect-worker --namespace=prefect -f values.yaml
 
-      - name: Wait for Pods to Appear
+      - name: Wait for Pods to Appear and Save Worker Pod Name
         run: |
           for i in {1..10}; do
             kubectl get pods -n prefect
             if [ "$(kubectl get pods -n prefect --no-headers | wc -l)" -gt 0 ]; then
               echo "Pods found!"
+              WORKER_POD_NAME=$(kubectl get pods -n prefect --no-headers -o custom-columns=":metadata.name" | grep prefect-worker)
+              echo "WORKER_POD_NAME=$WORKER_POD_NAME" >> $GITHUB_ENV
               break
             fi
             echo "No pods found, retrying in 10s..."
@@ -86,14 +88,19 @@ jobs:
           restore-keys: |
             uvcache-${{ runner.os }}-
 
-      - name: Install UV and packages
+      - name: Install python deps
         run: |
           python -m pip install -U uv
-          uv pip install --upgrade --system -e .[dev]
+          uv pip install git+https://github.com/prefecthq/prefect.git
 
-      - name: Run Worker for a Bit
+      - name: Schedule a run and then stream pod logs
         run: |
-          python scripts/run_worker_for_a_bit.py $PREFECT_WORK_POOL 100
-
+          python src/demo_project/test.py
+          prefect deployment run 'random-flow/test-k8s'
+          kubectl logs -f $WORKER_POD_NAME -n prefect
+        
+        env:
+          WORKER_POD_NAME: ${{ env.WORKER_POD_NAME }}
+        
       - name: Delete Kind Cluster
         run: kind delete cluster
