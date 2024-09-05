@@ -4,13 +4,10 @@ import sys
 from prefect.utilities.timeout import timeout
 
 
-def main(timeout_seconds: float = 100.0):
+def main(work_pool: str = "local", timeout_seconds: float = 100.0):
     with timeout(seconds=timeout_seconds):
-        subprocess.run(["prefect", "worker", "start", "--pool", "local"], check=True)
+        subprocess.run(["prefect", "worker", "start", "--pool", work_pool], check=True)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        main(float(sys.argv[1]))
-    else:
-        main()
+    main(work_pool=sys.argv[1], timeout_seconds=float(sys.argv[2]))

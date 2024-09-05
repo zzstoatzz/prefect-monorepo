@@ -54,17 +54,37 @@ jobs:
           echo "  config:" >> values.yaml
           echo "    workPool: $PREFECT_WORK_POOL" >> values.yaml
 
-
       - name: Install Prefect Worker
         run: |
           helm install prefect-worker prefect/prefect-worker --namespace=prefect -f values.yaml
 
-      - name: Wait for Worker
+      - name: Wait for Pods to Appear
         run: |
-          kubectl wait --for=condition=ready pod -l app=prefect-worker --timeout=300s --namespace=prefect
+          for i in {1..10}; do
+            kubectl get pods -n prefect
+            if [ "$(kubectl get pods -n prefect --no-headers | wc -l)" -gt 0 ]; then
+              echo "Pods found!"
+              break
+            fi
+            echo "No pods found, retrying in 10s..."
+            sleep 10
+          done
 
-      - name: Run Tests
-        run: pytest tests/
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        id: setup_python
+        with:
+          python-version: '3.12'
+
+      - name: Install packages
+        run: |
+          python -m pip install -U uv
+          uv pip install --system git+https://github.com/prefecthq/prefect.git#subdirectory=src/integrations/prefect-kubernetes
+
+
+      - name: Run Worker for a Bit
+        run: |
+          python scripts/run_worker_for_a_bit.py $PREFECT_WORK_POOL 100
 
       - name: Delete Kind Cluster
         run: kind delete cluster
