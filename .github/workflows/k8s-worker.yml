@@ -99,7 +99,9 @@ jobs:
           echo "----------------------------------------"
           echo "Start tailing logs for $WORKER_POD_NAME"
           echo "----------------------------------------"
-          kubectl logs -f $WORKER_POD_NAME -n prefect
+          timeout 30s kubectl logs -f $WORKER_POD_NAME -n prefect || true
+
+          echo "Log streaming finished"
         
         env:
           WORKER_POD_NAME: ${{ env.WORKER_POD_NAME }}
