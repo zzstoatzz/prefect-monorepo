@@ -1,0 +1,70 @@
+name: Test Prefect Worker on Kubernetes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+      PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+      PREFECT_WORK_POOL: kubernetes-pool
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Kind Cluster
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: v0.11.1
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.22.0'
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Add Prefect Helm Repository
+        run: |
+          helm repo add prefect https://prefecthq.github.io/prefect-helm
+          helm repo update
+
+      - name: Create Namespace
+        run: kubectl create namespace prefect
+
+      - name: Create Prefect API Secret
+        run: |
+          kubectl create secret generic prefect-api-key \
+            --namespace=prefect \
+            --from-literal=key=$(echo -n $PREFECT_API_KEY | base64)
+
+      - name: Configure values.yaml
+        run: |
+          PREFECT_ACCOUNT_ID=$(echo $PREFECT_API_URL | cut -d '/' -f 6)
+          PREFECT_WORKSPACE_ID=$(echo $PREFECT_API_URL | cut -d '/' -f 8)
+          echo "worker:" > values.yaml
+          echo "  cloudApiConfig:" >> values.yaml
+          echo "    accountId: $PREFECT_ACCOUNT_ID" >> values.yaml
+          echo "    workspaceId: $PREFECT_WORKSPACE_ID" >> values.yaml
+          echo "  config:" >> values.yaml
+          echo "    workPool: $PREFECT_WORK_POOL" >> values.yaml
+
+
+      - name: Install Prefect Worker
+        run: |
+          helm install prefect-worker prefect/prefect-worker --namespace=prefect -f values.yaml
+
+      - name: Wait for Worker
+        run: |
+          kubectl wait --for=condition=ready pod -l app=prefect-worker --timeout=300s --namespace=prefect
+
+      - name: Run Tests
+        run: pytest tests/
+
+      - name: Delete Kind Cluster
+        run: kind delete cluster
