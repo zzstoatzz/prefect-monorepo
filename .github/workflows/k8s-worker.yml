@@ -76,11 +76,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install packages
+      # Cache UV dependencies
+      - name: UV Cache
+        uses: actions/cache@v4
+        id: cache-uv
+        with:
+          path: ~/.cache/uv
+          key: uvcache-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            uvcache-${{ runner.os }}-
+
+      - name: Install UV and packages
         run: |
           python -m pip install -U uv
-          uv pip install --system git+https://github.com/prefecthq/prefect.git#subdirectory=src/integrations/prefect-kubernetes
-
+          uv pip install --upgrade --system -e .[dev]
 
       - name: Run Worker for a Bit
         run: |
