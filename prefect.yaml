@@ -215,6 +215,6 @@ deployments:
     entrypoint: src/demo_project/uses_secret.py:my_flow
     work_pool:
       name: docker-work
-    job_variables:
-      env:
-        MY_SECRET: "{{ prefect.blocks.secret.my-secret }}"
+      job_variables:
+        env:
+          MY_SECRET: "{{ prefect.blocks.secret.my-secret }}"
