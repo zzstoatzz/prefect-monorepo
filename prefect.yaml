@@ -218,3 +218,17 @@ deployments:
       job_variables:
         env:
           MY_SECRET: "{{ prefect.blocks.secret.my-secret }}"
+
+  - name: test-k8s-env
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: kubernetes-prd-internal-tools
+      job_variables:
+        env:
+          - name: MYENV
+            value: "var"
+          - name: MYENVFROM
+            valueFrom:
+              secretKeyRef:
+                name: "something"
+                key: "SECRET"

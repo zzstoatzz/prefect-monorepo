@@ -28,6 +28,9 @@ dev = [
 Code = "https://github.com/zzstoatzz/prefect-monorepo"
 Documentation = "https://github.com/zzstoatzz/prefect-monorepo/README.md"
 
+[project.entry-points."prefect.collections"]
+demo_project = "demo_project.worker"
+
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
