@@ -8,7 +8,7 @@ env:
   PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
 
 jobs:
-  build:
+  run-repros:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
