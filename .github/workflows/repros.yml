@@ -6,6 +6,7 @@ on:
 env:
   PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
   PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+  UV_SYSTEM_PYTHON: true
 
 jobs:
   run-repros:
@@ -38,7 +39,7 @@ jobs:
       - name: Install python deps
         run: |
           python -m pip install -U uv
-          uv pip install --system git+https://github.com/prefecthq/prefect.git aiohttp
+          uv pip install prefect aiohttp
 
       - name: Run Python files in repros/ (Windows)
         if: runner.os == 'Windows'
