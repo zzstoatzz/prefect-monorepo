@@ -6,7 +6,7 @@ from prefect import flow, task
 def my_flow():
     for url in ["https://www.google.com", "https://www.microsoft.com"]:
         data = download_file.submit(url)
-        do_something_with_data.submit(data)
+        do_something_with_data.submit(data).wait()
 
 
 @task()
