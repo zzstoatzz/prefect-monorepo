@@ -45,10 +45,20 @@ jobs:
         shell: cmd
         run: >
           for /r "repros" %%f in (*.py) do (
+            echo.
+            echo ========================================
+            echo Running: %%f
+            echo ========================================
             python "%%f"
           )
 
       - name: Run Python files in repros/ (Linux/Mac)
         if: runner.os != 'Windows'
         run: |
-          find repros -name '*.py' -exec python {} \;
+          for file in $(find repros -name '*.py'); do
+            echo
+            echo "========================================"
+            echo "Running: $file"
+            echo "========================================"
+            python "$file"
+          done
