@@ -1,13 +1,11 @@
-import asyncio
-
 import aiohttp
 from prefect import flow, task
 
 
 @flow
-async def my_flow():
+def my_flow():
     for url in ["https://www.google.com", "https://www.microsoft.com"]:
-        data = await download_file.submit(url)
+        data = download_file.submit(url)
         do_something_with_data.submit(data)
 
 
@@ -24,4 +22,4 @@ def do_something_with_data(data): ...
 
 
 if __name__ == "__main__":
-    asyncio.run(my_flow())
+    my_flow()
