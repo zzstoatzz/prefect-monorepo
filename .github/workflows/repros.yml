@@ -1,4 +1,4 @@
-name: Python Compatibility Test
+name: Prefect Repros on different Python versions and platforms
 
 on:
   workflow_dispatch:
