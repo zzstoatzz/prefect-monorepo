@@ -17,6 +17,7 @@ that runs daily, and illustrates that retries will occur with the same inputs.
 from datetime import datetime, timedelta
 
 from prefect import flow, task
+from prefect.client.schemas.schedules import CronSchedule
 from prefect.context import get_run_context
 
 
@@ -64,6 +65,6 @@ if __name__ == "__main__":
         entrypoint="src/demo_project/daily_flow.py:daily_flow",
     ).deploy(
         name="My Daily Flow Deployment",
-        schedule={"cron": "0 14 * * *"},
+        schedules=[CronSchedule(cron="0 14 * * *", timezone="America/Chicago")],
         work_pool_name="local",
     )
