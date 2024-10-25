@@ -243,8 +243,6 @@ deployments:
           image_name: some-image
           tag: testing
           dockerfile: Dockerfile.psycopg
-          buildargs:
-            MORE_REQUIREMENTS: psycopg2-binary
     pull:
       - prefect.deployments.steps.git_clone:
           repository: https://github.com/zzstoatzz/prefect-monorepo
