@@ -232,3 +232,21 @@ deployments:
               secretKeyRef:
                 name: "something"
                 key: "SECRET"
+
+  - name: uses-psycopg2
+    entrypoint: src/demo_project/uses_psycopg.py:get_data_from_postgres
+    work_pool:
+      name: docker-work
+
+    build:
+      - prefect_docker.deployments.steps.build_docker_image:
+          id: build-image
+          requires: prefect-docker>=0.6.1
+          image_name: some-image
+          tag: testing
+          dockerfile: Dockerfile.psyco
+          buildargs:
+            EXTRA_PIP_PACKAGES: "psycopg2-binary"
+
+    job_variables:
+      image: "{{ build_image.image }}"
