@@ -1,0 +1,6 @@
+FROM prefecthq/prefect:3.0.10-python3.12
+
+COPY psycopg-reqs.txt .
+
+RUN pip install -U pip
+RUN pip install -r psycopg-reqs.txt
