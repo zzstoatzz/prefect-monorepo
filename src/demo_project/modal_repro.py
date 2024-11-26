@@ -8,7 +8,7 @@ def hello():
 
 if __name__ == "__main__":
     # created work pool with
-    # prefect work-pool create --type modal:push --provision-infra modal-pipeline-pool
+    # prefect work-pool create --type modal:push --provision-infra modal --overwrite
     hello.from_source(
         source="https://github.com/zzstoatzz/prefect-monorepo.git",
         entrypoint="src/demo_project/modal_repro.py:hello",
@@ -16,5 +16,5 @@ if __name__ == "__main__":
         name="hello",
         build=False,
         push=False,
-        work_pool_name="modal-pipeline-pool",
+        work_pool_name="modal",
     )

@@ -1,0 +1,216 @@
+build:
+  - prefect.deployments.steps.run_shell_script:
+      id: get-commit-hash
+      script: git rev-parse --short HEAD
+      stream_output: false
+  - prefect_docker.deployments.steps.build_docker_image:
+      id: build-image
+      requires: prefect-docker
+      image_name: zzstoatzz/prefect-monorepo
+      tag: "{{ get-commit-hash.stdout }}"
+      dockerfile: Dockerfile.many
+  - prefect_docker.deployments.steps.push_docker_image:
+      requires: prefect-docker
+      image_name: zzstoatzz/prefect-monorepo
+      tag: "{{ get-commit-hash.stdout }}"
+
+deployments:
+  - name: healthcheck-docker-test-0
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-1
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-2
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-3
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-4
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-5
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-6
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-7
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-8
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-9
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-10
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-11
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-12
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-13
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-14
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-15
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-16
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-17
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-18
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-19
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-20
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-21
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-22
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-23
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-24
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-25
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-26
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-27
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-28
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-29
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-30
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-31
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-32
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-33
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-34
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-35
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-36
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-37
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-38
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
+
+  - name: healthcheck-docker-test-39
+    entrypoint: src/demo_project/healthcheck.py:healthcheck
+    work_pool:
+      name: docker-work
