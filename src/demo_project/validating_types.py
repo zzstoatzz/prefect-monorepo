@@ -1,5 +1,6 @@
 from typing import Annotated
 
+import pandas as pd
 from prefect import flow
 from pydantic import BaseModel, Field
 
@@ -20,6 +21,7 @@ class FlowInput(BaseModel):
 def process_input(flow_input: FlowInput, num: NonNegativeInt):
     print(flow_input)
     print(num)
+    print(pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]}))
 
 
 if __name__ == "__main__":

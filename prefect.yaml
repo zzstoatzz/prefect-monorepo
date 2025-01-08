@@ -252,3 +252,17 @@ deployments:
       name: docker-work
       job_variables:
         image: "{{ build-image.image }}"
+
+  - name: conditional-env-vars
+    entrypoint: src/demo_project/demo_flow.py:some_work
+    work_pool:
+      name: docker-work
+      job_variables:
+        env:
+          PASSWORD: "{{ set-conditional-env.stdout }}"
+    build:
+      - prefect.deployments.steps.run_shell_script:
+          id: set-conditional-env
+          script: bash -c 'if [ "$ENV_TYPE" = "prod" ]; then echo "my_prod_password"; else echo "my_dev_password"; fi'
+      - prefect.deployments.steps.run_shell_script:
+          script: echo "{{ set-conditional-env.stdout }}"
