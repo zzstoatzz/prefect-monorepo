@@ -1,3 +1,7 @@
+# /// script
+# dependencies = ["aiohttp", "prefect"]
+# ///
+
 import aiohttp
 from prefect import flow, task
 

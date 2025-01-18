@@ -37,5 +37,11 @@ if __name__ == "__main__":
             },
             num=0,
         ),
-        work_pool_name="managed",
+        job_variables=dict(
+            image="prefecthq/prefect:3-latest",
+            env=dict(
+                EXTRA_PIP_PACKAGES="git+https://github.com/prefecthq/prefect.git@better-load-logging"
+            ),
+        ),
+        work_pool_name="docker-work",
     )

@@ -21,11 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
       # Cache UV dependencies
       - name: UV Cache
         uses: actions/cache@v4
@@ -36,10 +31,10 @@ jobs:
           restore-keys: |
             uvcache-${{ runner.os }}-
 
-      - name: Install python deps
-        run: |
-          python -m pip install -U uv
-          uv pip install prefect aiohttp
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Run Python files in repros/ (Windows)
         if: runner.os == 'Windows'
@@ -50,7 +45,7 @@ jobs:
             echo ========================================
             echo Running: %%f
             echo ========================================
-            python "%%f"
+            uv run "%%f"
           )
 
       - name: Run Python files in repros/ (Linux/Mac)
@@ -61,5 +56,5 @@ jobs:
             echo "========================================"
             echo "Running: $file"
             echo "========================================"
-            python "$file"
+            uv run "$file"
           done

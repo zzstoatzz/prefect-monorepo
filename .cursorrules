@@ -1,0 +1,13 @@
+when doing MREs or scripts, use inline script dependencies, like so `uv run some/file.py` where
+
+```python
+# /// script
+# dependencies = ["prefect-aws>=0.1.0"]
+# ///
+from prefect_aws import AwsCredentials, AwsS3Bucket
+
+bucket = AwsS3Bucket(
+    bucket_name="n80n8flowstorage",
+    credentials=AwsCredentials(),
+).save("s3-bucket", overwrite=True)
+```
