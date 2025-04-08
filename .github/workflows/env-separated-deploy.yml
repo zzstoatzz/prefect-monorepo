@@ -29,46 +29,31 @@ jobs:
         with:
           fetch-depth: 0
   
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+      # Cache UV dependencies
+      - name: UV Cache
+        uses: actions/cache@v4
+        id: cache-uv
         with:
-          python-version: "3.10"
-          cache: "pip"
+          path: ~/.cache/uv
+          key: uvcache-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            uvcache-${{ runner.os }}-
 
-      - name: Install Dependencies
-        run: |
-          pip install .
-
-      - name: Get list of modified python files
-        id: getfile
-        run: |
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^src/.*\.py$' | tr '\n' ',')
-          echo "Modified Python files: $files"
-          echo "files=$files" >> $GITHUB_ENV
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.12'
 
       - name: switch to prod
-        run: prefect cloud workspace set -w ${{ env.PROD_WORKSPACE }}
+        run: uvx prefect cloud workspace set -w ${{ env.PROD_WORKSPACE }}
         if: github.ref == 'refs/heads/main'
 
       - name: switch to dev
-        run: prefect cloud workspace set -w ${{ env.DEV_WORKSPACE }}
+        run: uvx prefect cloud workspace set -w ${{ env.DEV_WORKSPACE }}
         if: startsWith(github.ref, 'refs/heads/feature-')
 
       - name: Deploy flows in branch defined in modified files
-        run: |
-          entrypoints=$(python scripts/get_flow_entrypoints.py)
-          echo "Found entrypoints: $entrypoints"
-          IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
-          IFS="," read -ra FILES <<< $files
-          for entrypoint in "${ENTRYPOINTS[@]}"; do
-              file=$(echo $entrypoint | cut -d ":" -f 1)
-              if [[ " ${FILES[@]} " =~ " ${file} " ]]; then
-                  echo "Deploying flow: $entrypoint"
-                  prefect --no-prompt deploy $entrypoint
-              else
-                  echo "Skipping flow: $entrypoint"
-              fi
-          done
+        run: uv run prefect --no-prompt deploy --all
         
         env:
           files: ${{ env.files }}

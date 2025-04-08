@@ -59,7 +59,8 @@ definitions:
 deployments:
   - name: healthcheck-demo
     entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *minutely
+    schedules:
+      - *minutely
     parameters:
       message: Don't panic!
     work_pool: *local_work_pool
@@ -71,7 +72,8 @@ deployments:
 
   - name: healthcheck-docker-test
     entrypoint: src/demo_project/healthcheck.py:healthcheck
-    schedule: *every_10_minutes
+    schedules:
+      - *every_10_minutes
     work_pool: *k8s_work_pool
     build: *docker_build
     # push: *docker_push
@@ -91,7 +93,7 @@ deployments:
       name: local
       job_variables:
         working_dir: /Users/nate/src/demos/prefect-monorepo/test
-    schedule: null
+    schedules: []
     pull:
       - prefect.deployments.steps.git_clone:
           repository: https://github.com/zzstoatzz/prefect-monorepo
@@ -102,7 +104,7 @@ deployments:
     entrypoint: src/demo_project/test.py:random_flow
     work_pool:
       name: docker-work
-    schedule: null
+    schedules: []
     pull:
       - prefect.deployments.steps.git_clone:
           id: clone-repo
@@ -117,7 +119,7 @@ deployments:
       name: k8s
       job_variables:
         image: zzstoatzz/prefect-monorepo:foo
-    schedule: null
+    schedules: []
     pull:
       - prefect.deployments.steps.set_working_directory:
           directory: /opt/prefect/
@@ -139,7 +141,7 @@ deployments:
         env:
           EXECUTION_ENVIRONMENT: "{{ $EXECUTION_ENVIRONMENT }}"
           MY_NOT_SO_SECRET_CONFIG: "{{ $MY_NOT_SO_SECRET_CONFIG }}"
-    schedule: null
+    schedules: []
 
   - name: write-welcome-email
     entrypoint: src/demo_project/write_email_to_user.py:compose_email
@@ -170,7 +172,7 @@ deployments:
       name: docker-work
       job_variables:
         image: zzstoatzz/prefect-monorepo:foo
-    schedule: null
+    schedules: []
     build: *cached_docker_build
     pull:
       - prefect.deployments.steps.set_working_directory:
@@ -182,7 +184,7 @@ deployments:
       name: docker-work
       job_variables:
         image: zzstoatzz/prefect-monorepo:foo
-    schedule: null
+    schedules: []
     build: *cached_docker_build
     pull:
       - prefect.deployments.steps.set_working_directory:
